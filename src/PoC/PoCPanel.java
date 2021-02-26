@@ -26,6 +26,7 @@ import burp.Commons;
 import run.RunPoCAction;
 
 import javax.swing.JRadioButton;
+import javax.swing.JLabel;
 
 public class PoCPanel extends JPanel {
 
@@ -44,6 +45,7 @@ public class PoCPanel extends JPanel {
 
 	private static JTextField textFieldSearch;
 	public static JRadioButton rdbtnUseRobotInput;
+	public static JLabel lblStatus;
 
 	public static JTextField getTextFieldSearch() {
 		return textFieldSearch;
@@ -80,9 +82,7 @@ public class PoCPanel extends JPanel {
 		this.setLayout(new BorderLayout(0, 0));
 		this.add(createButtonPanel(), BorderLayout.NORTH);
 		
-		rdbtnUseRobotInput = new JRadioButton("RobotInput");
-		rdbtnUseRobotInput.setSelected(true);
-		buttonPanel.add(rdbtnUseRobotInput);
+
 
 		titleTable = new LineTable(titleTableModel);
 		this.add(titleTable.getTableAndDetailSplitPane(),BorderLayout.CENTER);
@@ -94,8 +94,10 @@ public class PoCPanel extends JPanel {
 		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
 		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
 		for (File file:files) {
-			LineEntry entry = new LineEntry(file.toString());
-			lineEntries.put(file.toString(), entry);
+			if (file.exists() && file.isFile()) {
+				LineEntry entry = new LineEntry(file.toString());
+				lineEntries.put(file.toString(), entry);
+			}
 		}
 		return lineEntries;
 	}
@@ -176,6 +178,7 @@ public class PoCPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String keyword = textFieldSearch.getText().trim();
 				titleTable.search(keyword);
+				lblStatus.setText(titleTableModel.getStatusSummary());
 			}
 		});
 		buttonPanel.add(buttonSearch);
@@ -185,6 +188,7 @@ public class PoCPanel extends JPanel {
 		buttonFresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				LoadData("D:\\github\\POC-T\\script");
+				lblStatus.setText(titleTableModel.getStatusSummary());
 			}
 		});
 		
@@ -197,8 +201,14 @@ public class PoCPanel extends JPanel {
 				new RunPoCAction(targets, poc).run();
 			}
 		});
-
-		buttonPanel.setToolTipText(titleTableModel.getStatusSummary());
+		
+		rdbtnUseRobotInput = new JRadioButton("RobotInput");
+		rdbtnUseRobotInput.setSelected(true);
+		buttonPanel.add(rdbtnUseRobotInput);
+		
+		lblStatus = new JLabel("Status");
+		buttonPanel.add(lblStatus);
+		
 		return buttonPanel;
 	}
 
@@ -219,5 +229,6 @@ public class PoCPanel extends JPanel {
 		System.out.println(row+" title entries loaded from database file");
 		stdout.println(row+" title entries loaded from database file");
 		PoCPanel.getTitleTable().search("");// hide checked items
+		lblStatus.setText(titleTableModel.getStatusSummary());
 	}
 }
