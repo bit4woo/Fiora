@@ -92,9 +92,10 @@ public class PoCPanel extends JPanel {
 	//D:\github\POC-T\script
 	public IndexedLinkedHashMap<String,LineEntry> scanPoCFiles(String dir) {
 		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
-		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
+		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter(".py"), DirectoryFileFilter.INSTANCE);
 		for (File file:files) {
-			if (file.exists() && file.isFile()) {
+			System.out.println(file.toString());
+			if (file.exists() && file.isFile() && file.getName().endsWith("py")) {
 				LineEntry entry = new LineEntry(file.toString());
 				lineEntries.put(file.toString(), entry);
 			}

@@ -146,14 +146,15 @@ public class LineEntry {
 		File poc = new File(pocfile);
 		if (poc.exists() && poc.isFile()) {
 			try {
+				this.setPocFileFullPath(pocfile);
+				this.setPocfile(poc.getName());
+				
 				List<String> lines = FileUtils.readLines(poc);
 				for(String line:lines){
 					line = line.trim();
 					if (!(line.startsWith("__") && line.contains("="))) {
 						continue;
 					}
-					this.setPocFileFullPath(pocfile);
-					this.setPocfile(poc.getName());
 					if (line.startsWith("__author__")) {
 						this.setAuthor(fetchValue(line));
 					}

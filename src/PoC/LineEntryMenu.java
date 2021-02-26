@@ -34,15 +34,6 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		/*
-		JMenuItem setColorItem = new JMenuItem(new AbstractAction("Checking (Set to red)#TODO") {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				//lineTable.setColor(1);
-			}
-		});
-		 */
-
 		JMenuItem googleSearchItem = new JMenuItem(new AbstractAction("Seach on Google (double click index)") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -110,17 +101,11 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 		this.add(itemNumber);
-
-		this.addSeparator();
-		this.addSeparator();
-
 		this.add(googleSearchItem);
 		this.add(SearchOnGithubItem);
 		this.add(SearchOnHunterItem);
 		this.add(SearchOnFoFaItem);
 
-		this.addSeparator();
-		this.addSeparator();
 	}
 
 }
