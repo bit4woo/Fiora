@@ -1,0 +1,6 @@
+
+.project
+/bin/
+/target/
+/.idea/
+poct-fiora.bat

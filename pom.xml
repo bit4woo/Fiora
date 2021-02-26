@@ -1,0 +1,146 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.bit4woo.burp</groupId>
+	<artifactId>Fiora</artifactId>
+	<version>202100220</version>
+
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<!-- http://maven.apache.org/plugins/index.html -->
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<!-- 这是JDK的版本 -->
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>
+								true<!--for getVersion from pom.xml -->
+							</addDefaultImplementationEntries>
+							<addClasspath>true</addClasspath>
+							<mainClass>GUI.MainGUI</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<resources>
+			<resource>
+				<!-- https://stackoverflow.com/questions/4509309/in-maven-how-can-i-include-non-java-src-files-in-the-same-place-in-the-output-ja -->
+				<!-- 打包后的路径在jar包的根目录 -->
+				<directory>src/resources</directory> <!-- 路径 -->
+				<includes>
+					<include>*.xml</include>  <!-- 保证log4j2.xml打包进去 -->
+				</includes>
+				<excludes>
+					<exclude>*.yaml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+
+
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/net.portswigger.burp.extender/burp-extender-api -->
+		<dependency>
+			<groupId>net.portswigger.burp.extender</groupId>
+			<artifactId>burp-extender-api</artifactId>
+			<version>1.7.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.bit4woo</groupId>
+			<artifactId>burp-api-common</artifactId>
+			<version>v0.0.10</version>
+		</dependency>
+
+		<!-- 用于json格式判断和递归查找某个key的值 -->
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20190722</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
+		<dependency>
+			<groupId>org.beanshell</groupId>
+			<artifactId>bsh</artifactId>
+			<version>2.0b5</version>
+		</dependency>
+
+	</dependencies>
+</project>
