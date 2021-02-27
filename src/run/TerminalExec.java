@@ -18,7 +18,7 @@ import org.apache.commons.io.FileUtils;
  * 2、通过执行bat文件执行命令
  */
 public class TerminalExec {
-	
+
 	String workdir;
 	String cmdContent;
 	String FullBatchFilePath;
@@ -59,11 +59,11 @@ public class TerminalExec {
 		cmdContent = cmdContent +genCmd(parserPath,executerPath,parameter);
 		FullBatchFilePath = genBatchFile(cmdContent,batchFileName);
 	}
-	
+
 	public void run() {
 		executeBatchFile(FullBatchFilePath);
 	}
-	
+
 	/*
 	 * 通知执行bat文件来执行命令
 	 */
@@ -94,7 +94,7 @@ public class TerminalExec {
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			StringSelection selection = new StringSelection(cmdContent);
 			clipboard.setContents(selection, null);
-			
+
 			if (batchFileName == null || batchFileName.trim().equals("")) {
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMdd-HHmmss");
 				String timeString = simpleDateFormat.format(new Date());
@@ -140,7 +140,7 @@ public class TerminalExec {
 
 		if ((parserPath != null && new File(parserPath).exists() && new File(parserPath).isFile())
 				|| isInEnvironmentPath(parserPath)){
-			
+
 			if (parserPath.contains(" ")) {
 				parserPath = "\""+parserPath+"\"";//如果路径中包含空格，需要引号
 			}
@@ -149,12 +149,12 @@ public class TerminalExec {
 		}
 
 		if ((executerPath != null && new File(executerPath).exists() && new File(executerPath).isFile())
-			|| isInEnvironmentPath(executerPath)){
-			
+				|| isInEnvironmentPath(executerPath)){
+
 			if (executerPath.contains(" ")) {
 				executerPath = "\""+executerPath+"\"";//如果路径中包含空格，需要引号
 			}
-			
+
 			command.append(executerPath);
 			command.append(" ");
 		}
@@ -165,9 +165,9 @@ public class TerminalExec {
 		command.append(System.lineSeparator());
 		return command.toString();
 	}
-	
+
 	/*
-	 * 判断某个文件是否在环境变量中
+	 * 判断某个文件是否在环境变量中。输入文件名，不包含路径的。
 	 */
 	public static boolean isInEnvironmentPath(String filename) {
 		if (filename == null) {
@@ -181,12 +181,12 @@ public class TerminalExec {
 		if (pathvalue == null) {
 			pathvalue = values.get("Path");
 		}
-//		System.out.println(pathvalue);
+		//		System.out.println(pathvalue);
 		String[] items = pathvalue.split(";");
 		for (String item:items) {
 			File tmpPath = new File(item);
 			if (tmpPath.isDirectory()) {
-//				System.out.println(Arrays.asList(tmpPath.listFiles()));
+				//				System.out.println(Arrays.asList(tmpPath.listFiles()));
 				File fullpath = new File(item,filename);
 				if (Arrays.asList(tmpPath.listFiles()).contains(fullpath)) {
 					return true;
@@ -197,10 +197,10 @@ public class TerminalExec {
 		}
 		return false;
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println(isInEnvironmentPath("PoC-T.py"));
-//		TerminalExec xxx = new TerminalExec(null,"nmap-test.bat",null,"nmap.exe","-v -A www.baidu.com");
-//		xxx.run();
+		//		TerminalExec xxx = new TerminalExec(null,"nmap-test.bat",null,"nmap.exe","-v -A www.baidu.com");
+		//		xxx.run();
 	}
 }

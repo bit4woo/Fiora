@@ -5,6 +5,8 @@ import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -21,6 +23,8 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+
+import run.TerminalExec;
 
 public class Commons {
 
@@ -67,7 +71,7 @@ public class Commons {
 		if (ip.contains(":")) {//处理带有端口号的域名
 			ip = ip.substring(0,ip.indexOf(":"));
 		}
-		
+
 		try {
 			if ( ip == null || ip.isEmpty() ) {
 				return false;
@@ -120,7 +124,7 @@ public class Commons {
 			}
 		}else {
 			String[] cmdArray = new String[] {browser,urlString};
-			
+
 			//runtime.exec(browser+" "+urlString);//当命令中有空格时会有问题
 			Runtime.getRuntime().exec(cmdArray);
 		}
@@ -172,18 +176,18 @@ public class Commons {
 		}
 		return result;
 	}
-	
-	
+
+
 	public static void writeToClipboard(String text) {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		StringSelection selection = new StringSelection(text);
 		clipboard.setContents(selection, null);
 	}
-	
+
 	public static void main(String args[]) {
 
 	}
-	
+
 	/*
 	 *将形如 https://www.runoob.com的URL统一转换为
 	 * https://www.runoob.com:443/
@@ -191,20 +195,20 @@ public class Commons {
 	 * 因为末尾的斜杠，影响URL类的equals的结果。
 	 * 而默认端口影响String格式的对比结果。
 	 */
-	
+
 	public static String formateURLString(String urlString) {
-        try {
-        	//urlString = "https://www.runoob.com";
+		try {
+			//urlString = "https://www.runoob.com";
 			URL url = new URL(urlString);
 			String host = url.getHost();
 			int port = url.getPort();
 			String path = url.getPath();
-			
+
 			if (port == -1) {
 				String newHost = url.getHost()+":"+url.getDefaultPort();
 				urlString = urlString.replace(host, newHost);
 			}
-			
+
 			if (path.equals("")) {
 				urlString = urlString+"/";
 			}
@@ -213,7 +217,7 @@ public class Commons {
 		}
 		return urlString;
 	}
-	
+
 	public static List<String> getLinesFromTextArea(JTextArea textarea){
 		//user input maybe use "\n" in windows, so the System.lineSeparator() not always works fine!
 		String[] lines = textarea.getText().replaceAll("\r\n", "\n").split("\n");
@@ -225,5 +229,32 @@ public class Commons {
 			}
 		}
 		return result;
+	}
+
+	public static void openPoCFile(String filepath) {
+		if (TerminalExec.isInEnvironmentPath("code.exe")) {
+			try {
+				Runtime.getRuntime().exec("code.exe "+filepath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else if (TerminalExec.isInEnvironmentPath("idle.bat")){
+			try {
+				Runtime.getRuntime().exec("idle.bat "+filepath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			try {
+				//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
+				File file = new File(filepath);
+				String[] cmdArray = new String[] {"explorer.exe","\""+file.getParent()+"\""};
+				//stdout.println(GUI.getCurrentDBFile().getParent());
+				Runtime.getRuntime().exec(cmdArray);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

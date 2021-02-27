@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
@@ -23,7 +24,7 @@ import javax.swing.table.TableRowSorter;
 import PoC.search.History;
 import PoC.search.LineSearch;
 import burp.BurpExtender;
-import javax.swing.JTextArea;
+import burp.Commons;
 
 public class LineTable extends JTable
 {
@@ -103,16 +104,8 @@ public class LineTable extends JTable
 		LineEntry Entry = this.lineTableModel.getLineEntries().getValueAtIndex(super.convertRowIndexToModel(row));
 
 		this.lineTableModel.setCurrentlyDisplayedItem(Entry);
-		StringBuilder detail = new StringBuilder();
-		detail.append("Vuln Description:"+System.lineSeparator());
-		detail.append(Entry.getVulnDescription());
-		detail.append(System.lineSeparator());
-		detail.append(System.lineSeparator());
-		detail.append(System.lineSeparator());
-		detail.append("Reference:"+System.lineSeparator());
-		detail.append(Entry.getReference());
-		
-		textAreaPoCDetail.setText(detail.toString());
+		String detail = Entry.fetchDetail();
+		textAreaPoCDetail.setText(detail);
 		super.changeSelection(row, col, toggle, extend);
 	}
 
@@ -125,7 +118,7 @@ public class LineTable extends JTable
 
 	public JSplitPane tableAndDetailPanel(){
 		JSplitPane splitPane = new JSplitPane();//table area + detail area
-		splitPane.setResizeWeight(0.5);
+		splitPane.setResizeWeight(0.4);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		//TitlePanel.add(splitPane, BorderLayout.CENTER); // getTitlePanel to get it
 
@@ -136,26 +129,26 @@ public class LineTable extends JTable
 		splitPane.setLeftComponent(scrollPaneRequests);
 
 		JSplitPane RequestDetailPanel = new JSplitPane();//request and response
-		RequestDetailPanel.setResizeWeight(0.5);
+		RequestDetailPanel.setResizeWeight(0.2);
 		splitPane.setRightComponent(RequestDetailPanel);
 
 		JTabbedPane RequestPanel = new JTabbedPane();
 		RequestDetailPanel.setLeftComponent(RequestPanel);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		RequestPanel.addTab("targets", null, scrollPane, null);
-		
+
 		textAreaTarget = new JTextArea();
 		scrollPane.setViewportView(textAreaTarget);
 
 		JTabbedPane ResponsePanel = new JTabbedPane();
 		RequestDetailPanel.setRightComponent(ResponsePanel);
-		
+
 		JScrollPane scrollPane1 = new JScrollPane();
 		ResponsePanel.addTab("detail", null, scrollPane1, null);
-		
+
 		textAreaPoCDetail = new JTextArea();
-		textAreaPoCDetail.setWrapStyleWord(true);
+		textAreaPoCDetail.setLineWrap(true);
 		scrollPane1.setViewportView(textAreaPoCDetail);
 
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);//配合横向滚动条
@@ -174,14 +167,14 @@ public class LineTable extends JTable
 		preferredWidths.put("#",5);
 		preferredWidths.put("filename",30);
 		preferredWidths.put("VulnApp",10);
-		preferredWidths.put("VulnVersion",10);
+		preferredWidths.put("VulnVersion",20);
 		preferredWidths.put("VulnURL",30);
 		preferredWidths.put("VulnParameter","VulnParameter".length());
 		preferredWidths.put("VulnType",10);
 		preferredWidths.put("VulnDescription",30);
 		preferredWidths.put("Refrence",30);
-		preferredWidths.put("isPoCVerified",30);
-		preferredWidths.put("CVE",20);
+		preferredWidths.put("Verified","Verified".length());
+		preferredWidths.put("CVE","CVE-2019-3396111".length());
 		for(String header:LineTableModel.getTitletList()){
 			try{//避免动态删除表字段时，出错
 				int multiNumber = preferredWidths.get(header);
@@ -233,7 +226,6 @@ public class LineTable extends JTable
 		rowSorter.setRowFilter(filter);
 	}
 
-	
 	public void registerListeners(){
 		LineTable.this.setRowSelectionAllowed(true);
 		this.addMouseListener( new MouseAdapter()
@@ -248,7 +240,10 @@ public class LineTable extends JTable
 					int col = ((LineTable) e.getSource()).columnAtPoint(e.getPoint()); // 获得列位置
 
 					LineEntry selecteEntry = LineTable.this.lineTableModel.getLineEntries().getValueAtIndex(rows[0]);
-					if ((col==1 )) {//双击文件名。TODO
+					if ((col==0 )) {//双击文件名。TODO
+						String path = selecteEntry.getPocFileFullPath();
+						Commons.openPoCFile(path);
+					}else if ((col==1 )) {//双击文件名。TODO
 						String host = selecteEntry.getPocfile();
 						String url= "https://www.google.com/search?q=site%3A"+host;
 						try {

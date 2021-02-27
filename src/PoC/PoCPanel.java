@@ -6,12 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -24,9 +26,6 @@ import PoC.search.SearchTextField;
 import burp.BurpExtender;
 import burp.Commons;
 import run.RunPoCAction;
-
-import javax.swing.JRadioButton;
-import javax.swing.JLabel;
 
 public class PoCPanel extends JPanel {
 
@@ -81,7 +80,7 @@ public class PoCPanel extends JPanel {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setLayout(new BorderLayout(0, 0));
 		this.add(createButtonPanel(), BorderLayout.NORTH);
-		
+
 
 
 		titleTable = new LineTable(titleTableModel);
@@ -94,7 +93,7 @@ public class PoCPanel extends JPanel {
 		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
 		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter(".py"), DirectoryFileFilter.INSTANCE);
 		for (File file:files) {
-			System.out.println(file.toString());
+			//System.out.println(file.toString());
 			if (file.exists() && file.isFile() && file.getName().endsWith("py")) {
 				LineEntry entry = new LineEntry(file.toString());
 				lineEntries.put(file.toString(), entry);
@@ -102,7 +101,7 @@ public class PoCPanel extends JPanel {
 		}
 		return lineEntries;
 	}
-	
+
 	public void FindPoCTRootByEnv() {
 		String pathvalue = System.getenv().get("Path");
 		String[] items = pathvalue.split(";");
@@ -112,17 +111,18 @@ public class PoCPanel extends JPanel {
 				Collection<File> files = FileUtils.listFiles(tmpPath, FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
 				for (File file:files) {
 					String path = file.toString();
-					if (path.contains("POC-T\\script")) {
-						String poctRootPath = path.substring(0,path.indexOf("POC-T\\script")+"POC-T\\script".length()+1);
-						MainGUI.poctRootPath = poctRootPath;
+					if (path.contains("POC-T\\script") || path.endsWith("PoC-T.py")) {
+						//String poctRootPath = path.substring(0,path.indexOf("POC-T\\script")+"POC-T\\script".length()+1);
+						MainGUI.poctRootPath = item;
 						return;
 					}
 				}
 			}
 		}
+		JOptionPane.showMessageDialog(null,"Not found PoC-T in Environment,you should add it to path");
 		return;
 	}
-	
+
 	@Deprecated
 	public void FindPoCTRoot() {
 		for (File driver:File.listRoots()) {
@@ -138,7 +138,7 @@ public class PoCPanel extends JPanel {
 		}
 		return;
 	}
-	
+
 
 	public boolean LoadData(String dir){
 		try {//这其中的异常会导致burp退出
@@ -162,7 +162,7 @@ public class PoCPanel extends JPanel {
 	public JPanel createButtonPanel() {
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-		
+
 		JButton buttonFind = new JButton("Find PoC-T");//通过path环境变量获取，磁盘查找太慢了
 		buttonFind.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -192,7 +192,7 @@ public class PoCPanel extends JPanel {
 				lblStatus.setText(titleTableModel.getStatusSummary());
 			}
 		});
-		
+
 		JButton buttonRun = new JButton("Run");
 		buttonPanel.add(buttonRun);
 		buttonRun.addActionListener(new ActionListener() {
@@ -202,14 +202,14 @@ public class PoCPanel extends JPanel {
 				new RunPoCAction(targets, poc).run();
 			}
 		});
-		
+
 		rdbtnUseRobotInput = new JRadioButton("RobotInput");
 		rdbtnUseRobotInput.setSelected(true);
 		buttonPanel.add(rdbtnUseRobotInput);
-		
+
 		lblStatus = new JLabel("Status");
 		buttonPanel.add(lblStatus);
-		
+
 		return buttonPanel;
 	}
 

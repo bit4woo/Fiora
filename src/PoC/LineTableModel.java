@@ -45,7 +45,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 	PrintWriter stderr;
 
 	private static final String[] standardTitles = new String[] {
-			"#", "filename", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","isPoCVerified", "CVE","33"};
+			"#", "filename", "CVE", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","Verified"};
 	private static List<String> titletList = new ArrayList<>(Arrays.asList(standardTitles));
 	//为了实现动态表结构
 	public static List<String> getTitletList() {
@@ -150,6 +150,9 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 		if (columnIndex == titletList.indexOf("filename")){
 			return entry.getPocfile();
 		}
+		if (columnIndex == titletList.indexOf("CVE")){
+			return entry.getCVE();
+		}
 		if (columnIndex == titletList.indexOf("VulnApp")){
 			return entry.getVulnApp();
 		}
@@ -171,7 +174,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 		if (columnIndex == titletList.indexOf("Reference")){
 			return entry.getReference();
 		}
-		if (columnIndex == titletList.indexOf("isPoCVerified")){
+		if (columnIndex == titletList.indexOf("Verified")){
 			return entry.getIsPoCVerified();
 		}
 		return "";

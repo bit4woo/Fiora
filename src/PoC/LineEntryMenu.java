@@ -17,14 +17,14 @@ public class LineEntryMenu extends JPopupMenu {
 	PrintWriter stdout = BurpExtender.getStdout();
 	PrintWriter stderr = BurpExtender.getStderr();
 	private static LineTable lineTable;
-	
+
 	public static String getValue(int rowIndex,int columnIndex) {
 		//由于所有的返回值都是String类型的，都可以直接强制类型转换
 		Object value = lineTable.getModel().getValueAt(rowIndex, columnIndex);
 		return (String)value;
-		
+
 	}
-	
+
 	LineEntryMenu(final LineTable lineTable, final int[] rows,final int columnIndex){
 		this.lineTable = lineTable;
 
@@ -34,7 +34,20 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem googleSearchItem = new JMenuItem(new AbstractAction("Seach on Google (double click index)") {
+
+		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit this PoC(double click index)") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (rows.length >=50) {
+					return;
+				}
+				LineEntry selecteEntry = lineTable.getModel().getLineEntries().get(rows[0]);
+				String path = selecteEntry.getPocFileFullPath();
+				Commons.openPoCFile(path);
+			}
+		});
+
+		JMenuItem googleSearchItem = new JMenuItem(new AbstractAction("Seach on Google") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -71,11 +84,11 @@ public class LineEntryMenu extends JPopupMenu {
 				}
 			}
 		});
-		
+
 		JMenuItem SearchOnFoFaItem = new JMenuItem(new AbstractAction("Seach On FoFa") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				
+
 				if (rows.length >=50) {
 					return;
 				}
@@ -89,7 +102,7 @@ public class LineEntryMenu extends JPopupMenu {
 					}
 				}
 			}
-			
+
 		});
 
 		JMenuItem SearchOnHunterItem = new JMenuItem(new AbstractAction("Seach On Hunter") {
@@ -100,6 +113,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		this.add(editPoCItem);
 		this.add(itemNumber);
 		this.add(googleSearchItem);
 		this.add(SearchOnGithubItem);

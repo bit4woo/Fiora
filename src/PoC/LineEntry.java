@@ -1,7 +1,8 @@
 package PoC;
 
 import java.io.File;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +12,7 @@ import com.google.gson.Gson;
 
 public class LineEntry {
 	private static final Logger log=LogManager.getLogger(LineEntry.class);
-	
+
 	//{"#", "filename", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Refrence","isPoCVerified", "22","33"};
 	private String pocFileFullPath = ""; //PoC文件完整路径，用于定位文件进行编辑。不显示。
 	private String pocfile = ""; //PoC文件名称，用于显示
@@ -113,7 +114,7 @@ public class LineEntry {
 	public void setAuthor(String author) {
 		Author = author;
 	}
-	
+
 	public String getCVE() {
 		return CVE;
 	}
@@ -148,42 +149,49 @@ public class LineEntry {
 			try {
 				this.setPocFileFullPath(pocfile);
 				this.setPocfile(poc.getName());
-				
-				List<String> lines = FileUtils.readLines(poc);
-				for(String line:lines){
-					line = line.trim();
-					if (!(line.startsWith("__") && line.contains("="))) {
+
+				String content = FileUtils.readFileToString(poc);
+
+				//final String DOMAIN_NAME_PATTERN = "__.*__s+=s+\\\"\\\"\\\".*\\\"\\\"\\\"";
+				//有问号的是非贪婪模式，不带问号就是贪婪模式，直到最后一个三引号。
+				final String DOMAIN_NAME_PATTERN = "__.*?__.*?\\\"\\\"\\\"[\\s\\S]*?\\\"\\\"\\\"";
+				Pattern pDomainNameOnly = Pattern.compile(DOMAIN_NAME_PATTERN);
+				Matcher matcher = pDomainNameOnly.matcher(content);
+				while (matcher.find()) {//多次查找
+					String found = matcher.group();
+					//System.out.println(found);
+					if (!(found.startsWith("__") && found.contains("="))) {
 						continue;
 					}
-					if (line.startsWith("__author__")) {
-						this.setAuthor(fetchValue(line));
+					if (found.startsWith("__author__")) {
+						this.setAuthor(fetchValue(found));
 					}
-					if (line.startsWith("__CVE__")) {
-						this.setAuthor(fetchValue(line));
+					if (found.startsWith("__CVE__")) {
+						this.setCVE(fetchValue(found));
 					}
-					if (line.startsWith("__VulnApp__")) {
-						this.setVulnApp(fetchValue(line));
+					if (found.startsWith("__VulnApp__")) {
+						this.setVulnApp(fetchValue(found));
 					}
-					if (line.startsWith("__VulnVersion__")) {
-						this.setVulnVersion(fetchValue(line));
+					if (found.startsWith("__VulnVersion__")) {
+						this.setVulnVersion(fetchValue(found));
 					}
-					if (line.startsWith("__VulnURL__")) {
-						this.setVulnURL(fetchValue(line));
+					if (found.startsWith("__VulnURL__")) {
+						this.setVulnURL(fetchValue(found));
 					}
-					if (line.startsWith("__VulnParameter__")) {
-						this.setVulnParameter(fetchValue(line));
+					if (found.startsWith("__VulnParameter__")) {
+						this.setVulnParameter(fetchValue(found));
 					}
-					if (line.startsWith("__VulnType__")) {
-						this.setVulnType(fetchValue(line));
+					if (found.startsWith("__VulnType__")) {
+						this.setVulnType(fetchValue(found));
 					}
-					if (line.startsWith("__VulnDescription__")) {
-						this.setVulnDescription(fetchValue(line));
+					if (found.startsWith("__VulnDescription__")) {
+						this.setVulnDescription(fetchValue(found));
 					}
-					if (line.startsWith("__Reference__")) {
-						this.setReference(fetchValue(line));
+					if (found.startsWith("__Reference__")) {
+						this.setReference(fetchValue(found));
 					}
-					if (line.startsWith("__isPoCVerified__")) {
-						this.setIsPoCVerified(fetchValue(line));
+					if (found.startsWith("__isPoCVerified__")) {
+						this.setIsPoCVerified(fetchValue(found));
 					}
 				}
 			}catch(Exception e) {
@@ -191,7 +199,7 @@ public class LineEntry {
 			}
 		}
 	}
-	
+
 	public static String fetchValue(String line) {
 		line = line.split("=",2)[1].trim();
 		if (line.startsWith("\'\'\'") || line.startsWith("\"\"\"")) {
@@ -202,8 +210,44 @@ public class LineEntry {
 		return line;
 	}
 
+
+	public String fetchDetail() {
+		StringBuilder detail = new StringBuilder();
+		detail.append("Vuln App:");
+		detail.append(System.lineSeparator());
+		detail.append(this.getVulnApp());
+		detail.append(System.lineSeparator()+System.lineSeparator());
+
+		detail.append("Vuln Version:");
+		detail.append(System.lineSeparator());
+		detail.append(this.getVulnVersion());
+		detail.append(System.lineSeparator()+System.lineSeparator());
+
+		detail.append("Vuln URL:");
+		detail.append(System.lineSeparator());
+		detail.append(this.getVulnURL());
+		detail.append(System.lineSeparator()+System.lineSeparator());
+
+		detail.append("Vuln Parameter:");
+		detail.append(System.lineSeparator());
+		detail.append(this.getVulnParameter());
+		detail.append(System.lineSeparator()+System.lineSeparator());
+
+		detail.append("Vuln Description:");
+		detail.append(System.lineSeparator());
+		detail.append(this.getVulnDescription());
+		detail.append(System.lineSeparator()+System.lineSeparator());
+
+		detail.append("Vuln Reference:");
+		detail.append(System.lineSeparator());
+		detail.append(this.getReference());
+		detail.append(System.lineSeparator()+System.lineSeparator());
+
+		return detail.toString();
+	}
+
 	public static void main(String args[]) {
-		String file1 = "D:\\github\\POC-T\\script\\bit4-cas-deser-RCE.py";
+		String file1 = "D:\\github\\CVE-2019-3396_EXP\\RCE_exp.py";
 		LineEntry entry = new LineEntry(file1);
 		System.out.println(entry.ToJson());
 	}
