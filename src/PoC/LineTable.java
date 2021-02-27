@@ -174,7 +174,7 @@ public class LineTable extends JTable
 		preferredWidths.put("VulnDescription",30);
 		preferredWidths.put("Refrence",30);
 		preferredWidths.put("Verified","Verified".length());
-		preferredWidths.put("CVE","CVE-2019-3396111".length());
+		preferredWidths.put("CVE","CVE-2019-1234567".length());
 		for(String header:LineTableModel.getTitletList()){
 			try{//避免动态删除表字段时，出错
 				int multiNumber = preferredWidths.get(header);

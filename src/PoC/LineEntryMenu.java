@@ -1,7 +1,12 @@
 package PoC;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
@@ -41,9 +46,29 @@ public class LineEntryMenu extends JPopupMenu {
 				if (rows.length >=50) {
 					return;
 				}
-				LineEntry selecteEntry = lineTable.getModel().getLineEntries().get(rows[0]);
+				LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = selecteEntry.getPocFileFullPath();
 				Commons.openPoCFile(path);
+			}
+		});
+		
+		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy File Path") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (rows.length >=50) {
+					return;
+				}
+				List<String> paths = new ArrayList<String>();
+				for (int row:rows) {
+					LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(row);
+					String path = entry.getPocFileFullPath();
+					paths.add(path);
+				}
+				String textUrls = String.join(System.lineSeparator(), paths);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				StringSelection selection = new StringSelection(textUrls);
+				clipboard.setContents(selection, null);
+
 			}
 		});
 
@@ -75,7 +100,7 @@ public class LineEntryMenu extends JPopupMenu {
 				}
 				for (int row:rows) {
 					String searchContent = LineEntryMenu.getValue(row, columnIndex);
-					String url= "https://github.com/search?q=%22"+searchContent+"%22+%22jdbc.url%22&type=Code";
+					String url= "https://github.com/search?q=%22"+searchContent+"%22&type=Code";
 					try {
 						Commons.browserOpen(url, null);
 					} catch (Exception e) {
@@ -113,13 +138,14 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		this.add(editPoCItem);
 		this.add(itemNumber);
+		this.addSeparator();
+		
+		this.add(editPoCItem);
+		this.add(copyFilePathItem);
 		this.add(googleSearchItem);
 		this.add(SearchOnGithubItem);
 		this.add(SearchOnHunterItem);
 		this.add(SearchOnFoFaItem);
-
 	}
-
 }
