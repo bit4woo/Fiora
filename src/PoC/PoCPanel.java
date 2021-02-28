@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
@@ -171,6 +172,22 @@ public class PoCPanel extends JPanel {
 		});
 		buttonPanel.add(buttonFind);
 
+		JButton buttonOpenDir = new JButton("Open Dir");
+		buttonPanel.add(buttonOpenDir);
+		buttonOpenDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
+					File file = new File(MainGUI.poctRootPath);
+					String[] cmdArray = new String[] {"explorer.exe","\""+file+"\\script\""};
+					//stdout.println(GUI.getCurrentDBFile().getParent());
+					Runtime.getRuntime().exec(cmdArray);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		textFieldSearch = new SearchTextField().Create("");
 		buttonPanel.add(textFieldSearch);
 
@@ -203,6 +220,7 @@ public class PoCPanel extends JPanel {
 				new RunPoCAction(targets, poc).run();
 			}
 		});
+
 
 		rdbtnUseRobotInput = new JRadioButton("RobotInput");
 		rdbtnUseRobotInput.setSelected(true);

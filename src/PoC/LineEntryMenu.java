@@ -5,7 +5,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class LineEntryMenu extends JPopupMenu {
 	PrintWriter stdout = BurpExtender.getStdout();
 	PrintWriter stderr = BurpExtender.getStderr();
 	private static LineTable lineTable;
-	
+
 	public static void main(String[] args) throws Exception {
 		Commons.browserOpen("[]", null);
 	}
@@ -45,7 +44,7 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 
-		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit this PoC(double click index)") {
+		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit This PoC(Double Click Index)") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -56,8 +55,8 @@ public class LineEntryMenu extends JPopupMenu {
 				Commons.openPoCFile(path);
 			}
 		});
-		
-		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy File Path") {
+
+		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy PoC File Location") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -76,8 +75,28 @@ public class LineEntryMenu extends JPopupMenu {
 
 			}
 		});
-		
-		JMenuItem checkURLItem = new JMenuItem(new AbstractAction("check the vuln url") {
+
+		JMenuItem copyVulnUrlItem = new JMenuItem(new AbstractAction("Copy The vuln URL") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (rows.length >=50) {
+					return;
+				}
+				List<String> paths = new ArrayList<String>();
+				for (int row:rows) {
+					LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(row);
+					String path = entry.getPocFileFullPath();
+					paths.add(path);
+				}
+				String textUrls = String.join(System.lineSeparator(), paths);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				StringSelection selection = new StringSelection(textUrls);
+				clipboard.setContents(selection, null);
+
+			}
+		});
+
+		JMenuItem checkURLItem = new JMenuItem(new AbstractAction("Check The Vuln URL") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -114,7 +133,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem googleSearchItem = new JMenuItem(new AbstractAction("Seach on Google") {
+		JMenuItem googleSearchItem = new JMenuItem(new AbstractAction("Seach On Google") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -182,10 +201,15 @@ public class LineEntryMenu extends JPopupMenu {
 
 		this.add(itemNumber);
 		this.addSeparator();
-		
+
 		this.add(editPoCItem);
 		this.add(checkURLItem);
+
+		this.addSeparator();// copy
 		this.add(copyFilePathItem);
+		this.add(copyVulnUrlItem);
+
+		this.addSeparator();// search
 		this.add(googleSearchItem);
 		this.add(SearchOnGithubItem);
 		this.add(SearchOnHunterItem);
