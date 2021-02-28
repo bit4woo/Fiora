@@ -5,6 +5,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,10 @@ public class LineEntryMenu extends JPopupMenu {
 	PrintWriter stdout = BurpExtender.getStdout();
 	PrintWriter stderr = BurpExtender.getStderr();
 	private static LineTable lineTable;
+	
+	public static void main(String[] args) throws Exception {
+		Commons.browserOpen("[]", null);
+	}
 
 	public static String getValue(int rowIndex,int columnIndex) {
 		//由于所有的返回值都是String类型的，都可以直接强制类型转换
@@ -69,6 +74,43 @@ public class LineEntryMenu extends JPopupMenu {
 				StringSelection selection = new StringSelection(textUrls);
 				clipboard.setContents(selection, null);
 
+			}
+		});
+		
+		JMenuItem checkURLItem = new JMenuItem(new AbstractAction("check the vuln url") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (rows.length >=50) {
+					return;
+				}
+				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				String path = entry.getVulnURL();
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				for (String target:targets) {
+					if (target.trim().equals("")) {
+						continue;
+					}else if (target.startsWith("http")) {
+						String url = Commons.getShortUrl(target);
+						if (path.startsWith("/")) {
+							path = path.replaceFirst("/", "");
+						}
+						url = url+path;
+						try {
+							Commons.browserOpen(url, null);
+						} catch (Exception e) {
+							e.printStackTrace(stderr);
+						}
+					}else {
+						String url= String.format("http://%s%s",target, path);
+						String url1= String.format("http://%s%s",target, path);
+						try {
+							Commons.browserOpen(url, null);
+							Commons.browserOpen(url1, null);
+						} catch (Exception e) {
+							e.printStackTrace(stderr);
+						}
+					}
+				}
 			}
 		});
 
@@ -142,6 +184,7 @@ public class LineEntryMenu extends JPopupMenu {
 		this.addSeparator();
 		
 		this.add(editPoCItem);
+		this.add(checkURLItem);
 		this.add(copyFilePathItem);
 		this.add(googleSearchItem);
 		this.add(SearchOnGithubItem);

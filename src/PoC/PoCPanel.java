@@ -190,6 +190,7 @@ public class PoCPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				LoadData("D:\\github\\POC-T\\script");
 				lblStatus.setText(titleTableModel.getStatusSummary());
+				buttonSearch.doClick();
 			}
 		});
 

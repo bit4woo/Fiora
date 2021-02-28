@@ -217,6 +217,24 @@ public class Commons {
 		}
 		return urlString;
 	}
+	
+	public static String getShortUrl(String urlString) {
+		try {
+			//urlString = "https://www.runoob.com";
+			URL url = new URL(urlString);
+			String procotol = url.getProtocol();
+			String host = url.getHost();
+			int port = url.getPort();
+
+			if (port == -1) {
+				port = url.getDefaultPort();
+			}
+			return procotol+"://"+host+port+"/";
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return urlString;
+		}
+	}
 
 	public static List<String> getLinesFromTextArea(JTextArea textarea){
 		//user input maybe use "\n" in windows, so the System.lineSeparator() not always works fine!
