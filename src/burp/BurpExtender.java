@@ -26,8 +26,6 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory{
 	private static String Author = "by bit4woo";
 	private static String github = "https://github.com/bit4woo/Fiora";
 	private static MainGUI gui;
-	public static final String Extension_Setting_Name_DB_File = "domain-Hunter-pro-db-path";
-	public static final String Extension_Setting_Name_Line_Config = "domain-Hunter-pro-line-config";
 	private static final Logger log=LogManager.getLogger(BurpExtender.class);
 
 	public static PrintWriter getStdout() {
