@@ -20,10 +20,10 @@ public class MenuForBurp{
 	public List<JMenuItem> createMenuItemsForBurp(IContextMenuInvocation invocation) {
 		List<JMenuItem> JMenuItemList = new ArrayList<JMenuItem>();
 
-		JMenuItem sendhost = new JMenuItem("^_^ send host to Fiora");
+		JMenuItem sendhost = new JMenuItem("^_^ Send Host To Fiora");
 		sendhost.addActionListener(new sendHostToFiora(invocation));
 
-		JMenuItem sendurl = new JMenuItem("^_^ send url to Fiora");
+		JMenuItem sendurl = new JMenuItem("^_^ Send URL To Fiora");
 		sendurl.addActionListener(new sendURLToFiora(invocation));
 
 		JMenuItemList.add(sendhost);
