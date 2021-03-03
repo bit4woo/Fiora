@@ -46,6 +46,7 @@ public class PoCPanel extends JPanel {
 	private static JTextField textFieldSearch;
 	public static JRadioButton rdbtnUseRobotInput;
 	public static JLabel lblStatus;
+	public static JButton buttonFresh;
 
 	public static JTextField getTextFieldSearch() {
 		return textFieldSearch;
@@ -95,7 +96,7 @@ public class PoCPanel extends JPanel {
 		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter(".py"), DirectoryFileFilter.INSTANCE);
 		for (File file:files) {
 			//System.out.println(file.toString());
-			if (file.exists() && file.isFile() && file.getName().endsWith("py")) {
+			if (file.exists() && file.isFile() && !file.getName().startsWith("__")) {
 				LineEntry entry = new LineEntry(file.toString());
 				lineEntries.put(file.toString(), entry);
 			}
@@ -187,6 +188,29 @@ public class PoCPanel extends JPanel {
 				}
 			}
 		});
+		
+		JButton buttonCreate = new JButton("Create PoC");
+		buttonCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pocFileName = JOptionPane.showInputDialog("New PoC File Name", null);
+				if (pocFileName != null && !pocFileName.trim().equals("")) {
+					if (!pocFileName.endsWith(".py")) {
+						pocFileName = pocFileName+".py";
+					}
+
+					try {
+						File srcFile = new File(MainGUI.poctRootPath+"\\script\\__AAA-Template.py");
+						File destFile = new File(MainGUI.poctRootPath+"\\script\\"+pocFileName);
+						FileUtils.copyFile(srcFile, destFile);
+						PoCPanel.buttonFresh.doClick();
+						Commons.openPoCFile(destFile.getAbsolutePath());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		buttonPanel.add(buttonCreate);
 
 		textFieldSearch = new SearchTextField().Create("");
 		buttonPanel.add(textFieldSearch);
@@ -200,8 +224,8 @@ public class PoCPanel extends JPanel {
 			}
 		});
 		buttonPanel.add(buttonSearch);
-
-		JButton buttonFresh = new JButton("Fresh");
+		
+		buttonFresh = new JButton("Fresh");
 		buttonPanel.add(buttonFresh);
 		buttonFresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

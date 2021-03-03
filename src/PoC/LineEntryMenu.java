@@ -4,14 +4,20 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import org.apache.commons.io.FileUtils;
+
+import GUI.MainGUI;
 import burp.BurpExtender;
 import burp.Commons;
 
@@ -43,7 +49,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-
+		//one line
 		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit This PoC(Double Click Index)") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -56,6 +62,38 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		//one line
+		JMenuItem renamePoCItem = new JMenuItem(new AbstractAction("Rename This PoC") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (rows.length >=50) {
+					return;
+				}
+
+				try {
+					LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+					String path = selecteEntry.getPocFileFullPath();
+					File srcFile = new File(path);
+					
+					String oldname = selecteEntry.getPocfile();
+					
+					String pocFileName = JOptionPane.showInputDialog("New Name", oldname);
+					if (pocFileName != null && !pocFileName.trim().equals("")) {
+						if (!pocFileName.endsWith(".py")) {
+							pocFileName = pocFileName+".py";
+						}
+						File destFile = new File(MainGUI.poctRootPath+"\\script\\"+pocFileName);
+
+						FileUtils.moveFile(srcFile, destFile);
+						PoCPanel.buttonFresh.doClick();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		//multiple line
 		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy PoC File Location") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -76,6 +114,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		//multiple line
 		JMenuItem copyVulnUrlItem = new JMenuItem(new AbstractAction("Copy The vuln URL") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -96,6 +135,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		//one line
 		JMenuItem checkURLItem = new JMenuItem(new AbstractAction("Check The Vuln URL") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -133,6 +173,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		//multiple line
 		JMenuItem googleSearchItem = new JMenuItem(new AbstractAction("Seach On Google") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -152,7 +193,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-
+		//multiple line
 		JMenuItem SearchOnGithubItem = new JMenuItem(new AbstractAction("Seach On Github") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -171,6 +212,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		//multiple line
 		JMenuItem SearchOnFoFaItem = new JMenuItem(new AbstractAction("Seach On FoFa") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -191,7 +233,8 @@ public class LineEntryMenu extends JPopupMenu {
 
 		});
 
-		JMenuItem SearchOnHunterItem = new JMenuItem(new AbstractAction("Seach On Hunter") {
+		//one line
+		JMenuItem SearchOnFioraItem = new JMenuItem(new AbstractAction("Seach On Fiora") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				String searchContent = LineEntryMenu.getValue(rows[0], columnIndex);
@@ -203,6 +246,7 @@ public class LineEntryMenu extends JPopupMenu {
 		this.addSeparator();
 
 		this.add(editPoCItem);
+		this.add(renamePoCItem);
 		this.add(checkURLItem);
 
 		this.addSeparator();// copy
@@ -212,7 +256,7 @@ public class LineEntryMenu extends JPopupMenu {
 		this.addSeparator();// search
 		this.add(googleSearchItem);
 		this.add(SearchOnGithubItem);
-		this.add(SearchOnHunterItem);
 		this.add(SearchOnFoFaItem);
+		this.add(SearchOnFioraItem);// 1 line
 	}
 }
