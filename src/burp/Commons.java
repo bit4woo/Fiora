@@ -184,10 +184,6 @@ public class Commons {
 		clipboard.setContents(selection, null);
 	}
 
-	public static void main(String args[]) {
-
-	}
-
 	/*
 	 *将形如 https://www.runoob.com的URL统一转换为
 	 * https://www.runoob.com:443/
@@ -250,15 +246,17 @@ public class Commons {
 	}
 
 	public static void openPoCFile(String filepath) {
-		if (TerminalExec.isInEnvironmentPath("code.exe")) {
+		if (TerminalExec.isInEnvironmentPath("code.cmd")) {
 			try {
-				Runtime.getRuntime().exec("code.exe "+filepath);
+				String[] cmdArray = new String[] {"code.cmd","\""+filepath+"\""};
+				Runtime.getRuntime().exec(cmdArray);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}else if (TerminalExec.isInEnvironmentPath("idle.bat")){
 			try {
-				Runtime.getRuntime().exec("idle.bat "+filepath);
+				String[] cmdArray = new String[] {"idle.bat","\""+filepath+"\""};
+				Runtime.getRuntime().exec(cmdArray);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -274,5 +272,9 @@ public class Commons {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static void main(String args[]) {
+		openPoCFile("D:\\github\\POC-T\\script\\activemq-upload.py");
 	}
 }

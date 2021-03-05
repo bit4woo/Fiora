@@ -199,7 +199,7 @@ public class TerminalExec {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(isInEnvironmentPath("PoC-T.py"));
+		System.out.println(isInEnvironmentPath("code"));
 		//		TerminalExec xxx = new TerminalExec(null,"nmap-test.bat",null,"nmap.exe","-v -A www.baidu.com");
 		//		xxx.run();
 	}
