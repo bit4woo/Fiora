@@ -140,6 +140,7 @@ public class LineTable extends JTable
 
 		textAreaTarget = new JTextArea();
 		scrollPane.setViewportView(textAreaTarget);
+		textAreaTarget.addMouseListener(new TextAreaMouseListener(textAreaTarget));
 
 		JTabbedPane ResponsePanel = new JTabbedPane();
 		RequestDetailPanel.setRightComponent(ResponsePanel);
@@ -150,6 +151,7 @@ public class LineTable extends JTable
 		textAreaPoCDetail = new JTextArea();
 		textAreaPoCDetail.setLineWrap(true);
 		scrollPane1.setViewportView(textAreaPoCDetail);
+		textAreaPoCDetail.addMouseListener(new TextAreaMouseListener(textAreaPoCDetail));
 
 		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);//配合横向滚动条
 
