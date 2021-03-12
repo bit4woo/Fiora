@@ -188,24 +188,39 @@ public class PoCPanel extends JPanel {
 				}
 			}
 		});
-		
+
 		JButton buttonCreate = new JButton("Create PoC");
 		buttonCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String pocFileName = JOptionPane.showInputDialog("New PoC File Name", null);
-				if (pocFileName != null && !pocFileName.trim().equals("")) {
-					if (!pocFileName.endsWith(".py")) {
-						pocFileName = pocFileName+".py";
-					}
+				try {
+					File srcFile = new File(MainGUI.poctRootPath+"\\script\\__AAA-Template.py");
+					File destFile = getInputFile();
 
-					try {
-						File srcFile = new File(MainGUI.poctRootPath+"\\script\\__AAA-Template.py");
+					FileUtils.copyFile(srcFile, destFile);
+					PoCPanel.buttonFresh.doClick();
+					Commons.openPoCFile(destFile.getAbsolutePath());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			public File getInputFile() {
+				String message = "New PoC File Name";
+				String initialSelectionValue = null;
+				while (true) {
+					String pocFileName = JOptionPane.showInputDialog(message, initialSelectionValue);
+					if (pocFileName != null && !pocFileName.trim().equals("")) {
+						if (!pocFileName.endsWith(".py")) {
+							pocFileName = pocFileName+".py";
+						}
+
 						File destFile = new File(MainGUI.poctRootPath+"\\script\\"+pocFileName);
-						FileUtils.copyFile(srcFile, destFile);
-						PoCPanel.buttonFresh.doClick();
-						Commons.openPoCFile(destFile.getAbsolutePath());
-					} catch (IOException e1) {
-						e1.printStackTrace();
+						if (destFile.exists()) {
+							initialSelectionValue = pocFileName;
+							continue;
+						}else {
+							return destFile;
+						}
 					}
 				}
 			}
@@ -224,7 +239,7 @@ public class PoCPanel extends JPanel {
 			}
 		});
 		buttonPanel.add(buttonSearch);
-		
+
 		buttonFresh = new JButton("Fresh");
 		buttonPanel.add(buttonFresh);
 		buttonFresh.addActionListener(new ActionListener() {
@@ -235,13 +250,22 @@ public class PoCPanel extends JPanel {
 			}
 		});
 
-		JButton buttonRun = new JButton("Run");
+		JButton btnRun = new JButton("Run");
+		buttonPanel.add(btnRun);
+		btnRun.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
+				RunPoCAction.run(pocFullPath);
+			}
+		});
+
+		JButton buttonRun = new JButton("RunWithPoC-T");
 		buttonPanel.add(buttonRun);
 		buttonRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
-				new RunPoCAction(targets, poc).run();
+				RunPoCAction.runWithPoCT(targets, poc);
 			}
 		});
 
