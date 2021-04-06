@@ -242,10 +242,10 @@ public class LineTable extends JTable
 					int col = ((LineTable) e.getSource()).columnAtPoint(e.getPoint()); // 获得列位置
 
 					LineEntry selecteEntry = LineTable.this.lineTableModel.getLineEntries().getValueAtIndex(rows[0]);
-					if ((col==0 )) {//双击文件名。TODO
+					if ((col==0 || col == 1)) {//双击Index或文件名。打开文件
 						String path = selecteEntry.getPocFileFullPath();
 						Commons.openPoCFile(path);
-					}else if ((col==1 )) {//双击文件名。TODO
+					}else{//其他都进行搜索
 						String host = selecteEntry.getPocfile();
 						String url= "https://www.google.com/search?q=site%3A"+host;
 						try {

@@ -173,7 +173,7 @@ public class PoCPanel extends JPanel {
 		});
 		buttonPanel.add(buttonFind);
 
-		JButton buttonOpenDir = new JButton("Open Dir");
+		JButton buttonOpenDir = new JButton("Open Folder");
 		buttonPanel.add(buttonOpenDir);
 		buttonOpenDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -195,10 +195,11 @@ public class PoCPanel extends JPanel {
 				try {
 					File srcFile = new File(MainGUI.poctRootPath+"\\script\\__AAA-Template.py");
 					File destFile = getInputFile();
-
-					FileUtils.copyFile(srcFile, destFile);
-					PoCPanel.buttonFresh.doClick();
-					Commons.openPoCFile(destFile.getAbsolutePath());
+					if (null !=destFile) {
+						FileUtils.copyFile(srcFile, destFile);
+						PoCPanel.buttonFresh.doClick();
+						Commons.openPoCFile(destFile.getAbsolutePath());
+					}
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -209,7 +210,10 @@ public class PoCPanel extends JPanel {
 				String initialSelectionValue = null;
 				while (true) {
 					String pocFileName = JOptionPane.showInputDialog(message, initialSelectionValue);
-					if (pocFileName != null && !pocFileName.trim().equals("")) {
+					if (null == pocFileName) {
+						return null;
+					}
+					else if(!pocFileName.trim().equals("")) {
 						if (!pocFileName.endsWith(".py")) {
 							pocFileName = pocFileName+".py";
 						}

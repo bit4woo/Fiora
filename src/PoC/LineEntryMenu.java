@@ -74,9 +74,9 @@ public class LineEntryMenu extends JPopupMenu {
 					LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
 					String path = selecteEntry.getPocFileFullPath();
 					File srcFile = new File(path);
-					
+
 					String oldname = selecteEntry.getPocfile();
-					
+
 					String pocFileName = JOptionPane.showInputDialog("New Name", oldname);
 					if (pocFileName != null && !pocFileName.trim().equals("")) {
 						if (!pocFileName.endsWith(".py")) {
@@ -89,6 +89,22 @@ public class LineEntryMenu extends JPopupMenu {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+			}
+		});
+
+		//one line
+		JMenuItem showInExplorerItem = new JMenuItem(new AbstractAction("Show In System Explorer") {
+			@Override		
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
+					File file = new File(MainGUI.poctRootPath);
+					String[] cmdArray = new String[] {"explorer.exe","\""+file+"\\script\""};
+					//stdout.println(GUI.getCurrentDBFile().getParent());
+					Runtime.getRuntime().exec(cmdArray);
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -246,6 +262,7 @@ public class LineEntryMenu extends JPopupMenu {
 		this.addSeparator();
 
 		this.add(editPoCItem);
+		this.add(showInExplorerItem);
 		this.add(renamePoCItem);
 		this.add(checkURLItem);
 
