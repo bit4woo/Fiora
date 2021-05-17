@@ -4,22 +4,22 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 import org.apache.commons.io.FileUtils;
 
 import GUI.MainGUI;
 import burp.BurpExtender;
 import burp.Commons;
+import run.RunPoCAction;
+import run.Utils;
 
 public class LineEntryMenu extends JPopupMenu {
 
@@ -100,9 +100,8 @@ public class LineEntryMenu extends JPopupMenu {
 				try {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 					File file = new File(MainGUI.poctRootPath);
-					String[] cmdArray = new String[] {"explorer.exe","\""+file+"\\script\""};
-					//stdout.println(GUI.getCurrentDBFile().getParent());
-					Runtime.getRuntime().exec(cmdArray);
+					String path = file+File.pathSeparator+"script";
+					Utils.OpenFolder(path);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -258,12 +257,33 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
+		JMenuItem RunItem = new JMenuItem(new AbstractAction("Run This PoC") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
+				RunPoCAction.run(pocFullPath);
+			}
+		});
+
+		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
+				RunPoCAction.runWithPoCT(targets, poc);
+			}
+		});
+
 		this.add(itemNumber);
 		this.addSeparator();
 
-		this.add(editPoCItem);
+		this.add(editPoCItem);//edit
 		this.add(showInExplorerItem);
 		this.add(renamePoCItem);
+
+		this.addSeparator();//run check
+		this.add(RunItem);
+		this.add(RunWithPoCTItem);
 		this.add(checkURLItem);
 
 		this.addSeparator();// copy

@@ -9,13 +9,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
@@ -27,6 +23,7 @@ import PoC.search.SearchTextField;
 import burp.BurpExtender;
 import burp.Commons;
 import run.RunPoCAction;
+import run.Utils;
 
 public class PoCPanel extends JPanel {
 
@@ -93,6 +90,9 @@ public class PoCPanel extends JPanel {
 	//D:\github\POC-T\script
 	public IndexedLinkedHashMap<String,LineEntry> scanPoCFiles(String dir) {
 		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
+		if (null==dir || !new File(dir).exists()){
+			return lineEntries;
+		}
 		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter(".py"), DirectoryFileFilter.INSTANCE);
 		for (File file:files) {
 			//System.out.println(file.toString());
@@ -104,41 +104,53 @@ public class PoCPanel extends JPanel {
 		return lineEntries;
 	}
 
-	public void FindPoCTRootByEnv() {
-		String pathvalue = System.getenv().get("Path");
-		String[] items = pathvalue.split(";");
+	public boolean FindPoCTRootByEnv() {
+		String pathvalue = System.getenv().get("PATH");
+		//在mac中，这个方法只能获取到/etc/paths中的内容，所以需要将路径写入这个文件。
+		String[] items;
+		if (Utils.isMac()){
+			items = pathvalue.split(":");
+		}else{
+			items = pathvalue.split(";");
+		}
 		for (String item:items) {
 			File tmpPath = new File(item);
 			if (tmpPath.isDirectory()) {
 				Collection<File> files = FileUtils.listFiles(tmpPath, FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
 				for (File file:files) {
 					String path = file.toString();
-					if (path.contains("POC-T\\script") || path.endsWith("PoC-T.py")) {
+					if (path.contains("POC-T"+File.separator+"script") || path.endsWith("POC-T.py")) {
 						//String poctRootPath = path.substring(0,path.indexOf("POC-T\\script")+"POC-T\\script".length()+1);
 						MainGUI.poctRootPath = item;
-						return;
+						return true;
 					}
 				}
 			}
 		}
-		JOptionPane.showMessageDialog(null,"Not found PoC-T in Environment,you should add it to path");
-		return;
+		return false;
 	}
 
 	@Deprecated
 	public void FindPoCTRoot() {
-		for (File driver:File.listRoots()) {
-			Collection<File> files = FileUtils.listFiles(driver, FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
-			for (File file:files) {
-				String path = file.toString();
-				if (path.contains("POC-T\\script")) {
-					String poctRootPath = path.substring(0,path.indexOf("POC-T\\script")+"POC-T\\script".length()+1);
-					MainGUI.poctRootPath = poctRootPath;
-					return;
+		SwingWorker<Map, Map> worker = new SwingWorker<Map, Map>() {
+
+			@Override
+			protected Map doInBackground() throws Exception {
+				for (File driver:File.listRoots()) {
+					Collection<File> files = FileUtils.listFiles(driver, FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
+					for (File file:files) {
+						String path = file.toString();
+						String keyword = "POC-T"+File.separator+"script";
+						if (path.contains("POC-T"+File.separator+"script")) {
+							String poctRootPath = path.substring(0,path.indexOf(keyword)+keyword.length()+1);
+							MainGUI.poctRootPath = poctRootPath;
+							return null;
+						}
+					}
 				}
+				return null;
 			}
-		}
-		return;
+		};
 	}
 
 
@@ -164,11 +176,14 @@ public class PoCPanel extends JPanel {
 	public JPanel createButtonPanel() {
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
+		
 		JButton buttonFind = new JButton("Find PoC-T");//通过path环境变量获取，磁盘查找太慢了
 		buttonFind.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FindPoCTRootByEnv();
+				if (!FindPoCTRootByEnv()){
+					JOptionPane.showMessageDialog(null,"Not found PoC-T in Environment,you should add it to path");
+					FindPoCTRoot();
+				};
 			}
 		});
 		buttonPanel.add(buttonFind);
@@ -180,9 +195,8 @@ public class PoCPanel extends JPanel {
 				try {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 					File file = new File(MainGUI.poctRootPath);
-					String[] cmdArray = new String[] {"explorer.exe","\""+file+"\\script\""};
-					//stdout.println(GUI.getCurrentDBFile().getParent());
-					Runtime.getRuntime().exec(cmdArray);
+					String path = file.getPath()+File.separator+"script";
+					Utils.OpenFolder(path);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -248,13 +262,13 @@ public class PoCPanel extends JPanel {
 		buttonPanel.add(buttonFresh);
 		buttonFresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				LoadData("D:\\github\\POC-T\\script");
+				LoadData(MainGUI.poctRootPath);
 				lblStatus.setText(titleTableModel.getStatusSummary());
 				buttonSearch.doClick();
 			}
 		});
 
-		JButton btnRun = new JButton("Run");
+/*		JButton btnRun = new JButton("Run");
 		buttonPanel.add(btnRun);
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -271,7 +285,7 @@ public class PoCPanel extends JPanel {
 				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
 				RunPoCAction.runWithPoCT(targets, poc);
 			}
-		});
+		});*/
 
 
 		rdbtnUseRobotInput = new JRadioButton("RobotInput");

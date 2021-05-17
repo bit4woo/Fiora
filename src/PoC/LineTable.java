@@ -281,7 +281,7 @@ public class LineTable extends JTable
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//no need
+				mouseReleased(e);
 			}
 		});
 	}

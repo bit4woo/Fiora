@@ -1,6 +1,7 @@
 package run;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
@@ -58,5 +59,23 @@ public class Utils {
 			//C:\Program Files\Mozilla Firefox\firefox.exe
 			//C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe
 		}
+	}
+
+	public static void OpenFolder(String path) throws IOException {
+		String program = null;
+		if (Utils.isWindows()){
+			program = "explorer.exe";
+		}else if(Utils.isMac()){
+			program = "open";
+		}else {
+			program = "nautilus";
+		}
+		if ((path.startsWith("\"") && path.endsWith("\"")) || (path.startsWith("'") && path.endsWith("'"))){
+
+		}else{
+			path = "\""+path+"\"";
+		}
+		String[] cmdArray = new String[] {program,path};
+		Runtime.getRuntime().exec(cmdArray);
 	}
 }
