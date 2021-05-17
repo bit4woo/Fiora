@@ -82,7 +82,7 @@ public class LineEntryMenu extends JPopupMenu {
 						if (!pocFileName.endsWith(".py")) {
 							pocFileName = pocFileName+".py";
 						}
-						File destFile = new File(MainGUI.poctRootPath+"\\script\\"+pocFileName);
+						File destFile = new File(MainGUI.poctRootPath+File.separator+"script"+File.separator+pocFileName);
 
 						FileUtils.moveFile(srcFile, destFile);
 						PoCPanel.buttonFresh.doClick();
@@ -100,7 +100,7 @@ public class LineEntryMenu extends JPopupMenu {
 				try {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 					File file = new File(MainGUI.poctRootPath);
-					String path = file+File.pathSeparator+"script";
+					String path = file+File.separator+"script";
 					Utils.OpenFolder(path);
 				} catch (IOException e1) {
 					e1.printStackTrace();

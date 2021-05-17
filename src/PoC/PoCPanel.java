@@ -120,7 +120,6 @@ public class PoCPanel extends JPanel {
 				for (File file:files) {
 					String path = file.toString();
 					if (path.contains("POC-T"+File.separator+"script") || path.endsWith("POC-T.py")) {
-						//String poctRootPath = path.substring(0,path.indexOf("POC-T\\script")+"POC-T\\script".length()+1);
 						MainGUI.poctRootPath = item;
 						return true;
 					}
@@ -210,7 +209,7 @@ public class PoCPanel extends JPanel {
 		buttonCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					File srcFile = new File(MainGUI.poctRootPath+"\\script\\__AAA-Template.py");
+					File srcFile = new File(MainGUI.poctRootPath+File.separator+"script"+File.separator+"__AAA-Template.py");
 					File destFile = getInputFile();
 					if (null !=destFile) {
 						FileUtils.copyFile(srcFile, destFile);
@@ -235,7 +234,7 @@ public class PoCPanel extends JPanel {
 							pocFileName = pocFileName+".py";
 						}
 
-						File destFile = new File(MainGUI.poctRootPath+"\\script\\"+pocFileName);
+						File destFile = new File(MainGUI.poctRootPath+File.separator+"script"+File.separator+pocFileName);
 						if (destFile.exists()) {
 							initialSelectionValue = pocFileName;
 							continue;

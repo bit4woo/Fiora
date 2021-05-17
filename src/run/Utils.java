@@ -72,7 +72,7 @@ public class Utils {
 		}
 		if ((path.startsWith("\"") && path.endsWith("\"")) || (path.startsWith("'") && path.endsWith("'"))){
 
-		}else{
+		}else if (path.contains(" ")){
 			path = "\""+path+"\"";
 		}
 		String[] cmdArray = new String[] {program,path};

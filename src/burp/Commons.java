@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import run.TerminalExec;
+import run.Utils;
 
 public class Commons {
 
@@ -264,9 +265,7 @@ public class Commons {
 			try {
 				//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 				File file = new File(filepath);
-				String[] cmdArray = new String[] {"explorer.exe","\""+file.getParent()+"\""};
-				//stdout.println(GUI.getCurrentDBFile().getParent());
-				Runtime.getRuntime().exec(cmdArray);
+				Utils.OpenFolder(file.getParent());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
