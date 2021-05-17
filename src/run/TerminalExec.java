@@ -81,8 +81,9 @@ public class TerminalExec {
 		}
 		try {
 			Process process = Runtime.getRuntime().exec(command);
+			process.waitFor();//等待执行完成
 			return process;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -107,7 +108,9 @@ public class TerminalExec {
 			if (!batFile.exists()) {
 				batFile.createNewFile();
 			}
-
+			if (Utils.isMac()){
+				cmdContent = String.format("osascript -e 'tell app \"Terminal\" to do script \"%s\"'",cmdContent);
+			}
 			FileUtils.writeByteArrayToFile(batFile, cmdContent.getBytes());
 			return batFile.getAbsolutePath();
 		} catch (IOException e) {
@@ -167,7 +170,7 @@ public class TerminalExec {
 	}
 
 	/*
-	 * 判断某个文件是否在环境变量中。输入文件名，不包含路径的。
+	 * 判断某个文件是否在环境变量中
 	 */
 	public static boolean isInEnvironmentPath(String filename) {
 		if (filename == null) {
@@ -199,8 +202,8 @@ public class TerminalExec {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(isInEnvironmentPath("code"));
-		//		TerminalExec xxx = new TerminalExec(null,"nmap-test.bat",null,"nmap.exe","-v -A www.baidu.com");
-		//		xxx.run();
+		System.out.println(isInEnvironmentPath("nmap.exe"));
+		TerminalExec xxx = new TerminalExec(null,"nmap-test.bat",null,"nmap.exe","-v -A www.baidu.com");
+		xxx.run();
 	}
 }
