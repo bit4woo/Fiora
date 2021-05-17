@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import GUI.MainGUI;
 import bsh.This;
 
-public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory{
+public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IExtensionStateListener{
 	/**
 	 *
 	 */
@@ -84,9 +84,11 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory{
 
 		callbacks.setExtensionName(getFullExtenderName()); //插件名称
 		callbacks.registerContextMenuFactory(this);
+		callbacks.registerExtensionStateListener(this);
 
+		stdout.println("saving PoC-T Path to config: "+MainGUI.poctRootPath);
+		MainGUI.poctRootPath = BurpExtender.getCallbacks().loadExtensionSetting(BurpExtender.ExtenderName);
 		gui = new MainGUI();
-
 		SwingUtilities.invokeLater(new Runnable()
 		{//create GUI
 			public void run()
@@ -110,5 +112,11 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory{
 	@Override
 	public List<JMenuItem> createMenuItems(IContextMenuInvocation invocation) {
 		return new MenuForBurp().createMenuItemsForBurp(invocation);
+	}
+
+	@Override
+	public void extensionUnloaded() {
+		BurpExtender.getCallbacks().saveExtensionSetting(BurpExtender.ExtenderName, MainGUI.poctRootPath);
+		stdout.println("saving PoC-T Path to config: "+MainGUI.poctRootPath);
 	}
 }

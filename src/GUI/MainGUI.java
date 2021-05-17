@@ -50,6 +50,11 @@ public class MainGUI extends JFrame {
 		pocPanel = new PoCPanel();
 		tabbedWrapper.addTab("PoC", null, pocPanel, null);
 	}
+
+	public MainGUI(String poctRootPath){
+		this();
+		MainGUI.poctRootPath = poctRootPath;
+	}
 	
 	/**
 	 * Launch the application.

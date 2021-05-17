@@ -184,6 +184,9 @@ public class PoCPanel extends JPanel {
 					JOptionPane.showMessageDialog(null,"Not found PoC-T in Environment,you should add it to path");
 					FindPoCTRoot();
 				};
+				if (null!=MainGUI.poctRootPath){
+					System.out.println("PoC-T Founded : "+MainGUI.poctRootPath);
+				}
 			}
 		});
 		buttonPanel.add(buttonFind);
