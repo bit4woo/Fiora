@@ -265,7 +265,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction() {
+		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction("Run This PoC With PoC-T") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());

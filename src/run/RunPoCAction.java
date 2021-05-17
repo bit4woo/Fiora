@@ -40,10 +40,10 @@ public class RunPoCAction{
 
 			RobotInput ri = new RobotInput();
 			if (useRobot) {
-				String command = RobotInput.genCmd(null,poctPath,para);
+				String command = RobotInput.genCmd("python",poctPath,para);
 				ri.inputString(command);
 			}else {
-				TerminalExec exec = new TerminalExec(null,"poct-fiora.bat",null,poctPath,para);
+				TerminalExec exec = new TerminalExec(null,"poct-fiora.bat","python",poctPath,para);
 				exec.run();
 			}
 		}
@@ -62,10 +62,10 @@ public class RunPoCAction{
 
 			RobotInput ri = new RobotInput();
 			if (useRobot) {
-				String command = RobotInput.genCmd(null,poc,"");
+				String command = RobotInput.genCmd("python",poc,"");
 				ri.inputString(command);
 			}else {
-				TerminalExec exec = new TerminalExec(null,"poct-fiora.bat",null,poc,"");
+				TerminalExec exec = new TerminalExec(null,"poct-fiora.bat","python",poc,"");
 				exec.run();
 			}
 		}

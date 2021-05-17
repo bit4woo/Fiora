@@ -141,9 +141,7 @@ public class TerminalExec {
 	public static String genCmd(String parserPath,String executerPath, String parameter) {
 		StringBuilder command = new StringBuilder();
 
-		if ((parserPath != null && new File(parserPath).exists() && new File(parserPath).isFile())
-				|| isInEnvironmentPath(parserPath)){
-
+		if (parserPath != null){
 			if (parserPath.contains(" ")) {
 				parserPath = "\""+parserPath+"\"";//如果路径中包含空格，需要引号
 			}
