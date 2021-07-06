@@ -265,12 +265,35 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction("Run This PoC With PoC-T") {
+		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction("Run This PoC(PoC-T)") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
 				RunPoCAction.runWithPoCT(targets, poc);
+			}
+		});
+		
+		JMenuItem genRunCmdItem = new JMenuItem(new AbstractAction("Gen Cmd To Run This PoC") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
+				String cmd = RunPoCAction.genCommand(pocFullPath);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				StringSelection selection = new StringSelection(cmd);
+				clipboard.setContents(selection, null);
+			}
+		});
+
+		JMenuItem genRunCmdWithPoCTItem = new JMenuItem(new AbstractAction("Gen Cmd To Run This PoC(PoC-T)") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
+				String cmd = RunPoCAction.genCommandWithPoCT(targets, poc);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				StringSelection selection = new StringSelection(cmd);
+				clipboard.setContents(selection, null);
 			}
 		});
 
@@ -284,6 +307,8 @@ public class LineEntryMenu extends JPopupMenu {
 		this.addSeparator();//run check
 		this.add(RunItem);
 		this.add(RunWithPoCTItem);
+		this.add(genRunCmdItem);
+		this.add(genRunCmdWithPoCTItem);
 		this.add(checkURLItem);
 
 		this.addSeparator();// copy
