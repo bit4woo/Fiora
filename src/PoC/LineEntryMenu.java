@@ -4,14 +4,16 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 
 import org.apache.commons.io.FileUtils;
 
@@ -19,7 +21,6 @@ import GUI.MainGUI;
 import burp.BurpExtender;
 import burp.Commons;
 import run.RunPoCAction;
-import run.Utils;
 
 public class LineEntryMenu extends JPopupMenu {
 
@@ -50,7 +51,7 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 		//one line
-		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit This PoC(Double Click Index)") {
+		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit With VSCode(Double Click Index)") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -58,12 +59,12 @@ public class LineEntryMenu extends JPopupMenu {
 				}
 				LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = selecteEntry.getPocFileFullPath();
-				Commons.openPoCFile(path);
+				Commons.editWithVSCode(path);
 			}
 		});
 
 		//one line
-		JMenuItem renamePoCItem = new JMenuItem(new AbstractAction("Rename This PoC") {
+		JMenuItem renamePoCItem = new JMenuItem(new AbstractAction("Rename") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -94,14 +95,14 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 		//one line
-		JMenuItem showInExplorerItem = new JMenuItem(new AbstractAction("Show In System Explorer") {
+		JMenuItem showInExplorerItem = new JMenuItem(new AbstractAction("Show In Folder") {
 			@Override		
 			public void actionPerformed(ActionEvent e) {
 				try {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 					File file = new File(MainGUI.poctRootPath);
 					String path = file+File.separator+"script";
-					Utils.OpenFolder(path);
+					Commons.OpenFolder(path);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -109,7 +110,7 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 		//multiple line
-		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy PoC File Location") {
+		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy Full Path") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -257,7 +258,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem RunItem = new JMenuItem(new AbstractAction("Run This PoC") {
+		JMenuItem RunItem = new JMenuItem(new AbstractAction("Run") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
@@ -265,7 +266,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction("Run This PoC(PoC-T)") {
+		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction("Run With PoC-T") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
@@ -274,26 +275,22 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 		
-		JMenuItem genRunCmdItem = new JMenuItem(new AbstractAction("Gen Cmd To Run This PoC") {
+		JMenuItem genRunCmdItem = new JMenuItem(new AbstractAction("Gen Cmd To Run") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
 				String cmd = RunPoCAction.genCommand(pocFullPath);
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				StringSelection selection = new StringSelection(cmd);
-				clipboard.setContents(selection, null);
+				Commons.writeToClipboard(cmd);
 			}
 		});
 
-		JMenuItem genRunCmdWithPoCTItem = new JMenuItem(new AbstractAction("Gen Cmd To Run This PoC(PoC-T)") {
+		JMenuItem genRunCmdWithPoCTItem = new JMenuItem(new AbstractAction("Gen Cmd To Run With PoC-T") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
 				String cmd = RunPoCAction.genCommandWithPoCT(targets, poc);
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				StringSelection selection = new StringSelection(cmd);
-				clipboard.setContents(selection, null);
+				Commons.writeToClipboard(cmd);
 			}
 		});
 

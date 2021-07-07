@@ -8,10 +8,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
@@ -22,8 +27,6 @@ import GUI.MainGUI;
 import PoC.search.SearchTextField;
 import burp.BurpExtender;
 import burp.Commons;
-import run.RunPoCAction;
-import run.Utils;
 
 public class PoCPanel extends JPanel {
 
@@ -108,7 +111,7 @@ public class PoCPanel extends JPanel {
 		String pathvalue = System.getenv().get("PATH");
 		//在mac中，这个方法只能获取到/etc/paths中的内容，所以需要将路径写入这个文件。
 		String[] items;
-		if (Utils.isMac()){
+		if (Commons.isMac()){
 			items = pathvalue.split(":");
 		}else{
 			items = pathvalue.split(";");
@@ -198,7 +201,7 @@ public class PoCPanel extends JPanel {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 					File file = new File(MainGUI.poctRootPath);
 					String path = file.getPath()+File.separator+"script";
-					Utils.OpenFolder(path);
+					Commons.OpenFolder(path);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -214,7 +217,7 @@ public class PoCPanel extends JPanel {
 					if (null !=destFile) {
 						FileUtils.copyFile(srcFile, destFile);
 						PoCPanel.buttonFresh.doClick();
-						Commons.openPoCFile(destFile.getAbsolutePath());
+						Commons.editWithVSCode(destFile.getAbsolutePath());
 					}
 				} catch (IOException e1) {
 					e1.printStackTrace();

@@ -9,6 +9,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 
+import burp.Commons;
+
 //https://bbs.51cto.com/thread-1097189-1.html
 public class RobotInput extends Robot {
 
@@ -132,9 +134,9 @@ public class RobotInput extends Robot {
 		StringSelection tText = new StringSelection(str);
 		clip.setContents(tText, tText); //设置剪切板内容,在Linux中这会修改ctrl+shift+v的内容
 
-		if (Utils.isWindows10()) {//粘贴的不同实现方式
+		if (Commons.isWindows10()) {//粘贴的不同实现方式
 			inputWithCtrl(KeyEvent.VK_V);
-		}else if (Utils.isWindows()) {
+		}else if (Commons.isWindows()) {
 			inputWithAlt(KeyEvent.VK_SPACE);//
 			InputChar(KeyEvent.VK_E);
 			InputChar(KeyEvent.VK_P);
@@ -147,7 +149,7 @@ public class RobotInput extends Robot {
 			//				// TODO Auto-generated catch block
 			//				e.printStackTrace();
 			//			}
-		}else if (Utils.isMac()) {
+		}else if (Commons.isMac()) {
 			delay(100);
 			keyPress(KeyEvent.VK_META);
 			keyPress(KeyEvent.VK_V);
@@ -155,7 +157,7 @@ public class RobotInput extends Robot {
 			keyRelease(KeyEvent.VK_V);
 			keyRelease(KeyEvent.VK_META);
 			delay(100);
-		}else if (Utils.isUnix()) {
+		}else if (Commons.isUnix()) {
 			//Ctrl+Shift+V 只可以在/usr/bin/gnome-terminal中生效
 			//shift+insert 在/usr/bin/xterm中和 /usr/bin/gnome-terminal中都可以使用
 			//https://askubuntu.com/questions/202459/keyboard-shortcut-for-pasting-on-the-gnome-terminal
@@ -221,12 +223,12 @@ public class RobotInput extends Robot {
 	public static void startCmdConsole() {
 		try {
 			Process process = null;
-			if (Utils.isWindows()) {
+			if (Commons.isWindows()) {
 				process = Runtime.getRuntime().exec("cmd /c start cmd.exe");
-			} else if (Utils.isMac()){
+			} else if (Commons.isMac()){
 				///System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
 				process = Runtime.getRuntime().exec("open -n -F -a /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal");
-			}else if (Utils.isUnix()) {
+			}else if (Commons.isUnix()) {
 				process = Runtime.getRuntime().exec("/usr/bin/gnome-terminal");//kali和Ubuntu测试通过
 				//				if(new File("/usr/bin/gnome-terminal").exists()) {
 				//					process = Runtime.getRuntime().exec("/usr/bin/gnome-terminal");

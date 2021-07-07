@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
+import burp.Commons;
+
 /*
  * 在系统terminal中执行命令，实现思路：
  * 1、将命令写入bat文件
@@ -69,7 +71,7 @@ public class TerminalExec {
 	 */
 	public static Process executeBatchFile(String batfilepath) {
 		String command = "";
-		if (Utils.isWindows()) {
+		if (Commons.isWindows()) {
 			command="cmd /c start " + batfilepath;
 		} else {
 			if (new File("/bin/sh").exists()) {
@@ -108,7 +110,7 @@ public class TerminalExec {
 			if (!batFile.exists()) {
 				batFile.createNewFile();
 			}
-			if (Utils.isMac()){
+			if (Commons.isMac()){
 				cmdContent = String.format("osascript -e 'tell app \"Terminal\" to do script \"%s\"'",cmdContent);
 			}
 			FileUtils.writeByteArrayToFile(batFile, cmdContent.getBytes());
@@ -126,7 +128,7 @@ public class TerminalExec {
 		//运行命令的工作目录，work path
 		String command = "cd "+dir+System.lineSeparator();
 
-		if (Utils.isWindows()) {//如果是windows，还要注意不同磁盘的切换
+		if (Commons.isWindows()) {//如果是windows，还要注意不同磁盘的切换
 			String diskString = dir.split(":")[0];
 			command =command+ diskString+":"+System.lineSeparator();
 		}

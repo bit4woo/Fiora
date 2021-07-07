@@ -244,7 +244,7 @@ public class LineTable extends JTable
 					LineEntry selecteEntry = LineTable.this.lineTableModel.getLineEntries().getValueAtIndex(rows[0]);
 					if ((col==0 || col == 1)) {//双击Index或文件名。打开文件
 						String path = selecteEntry.getPocFileFullPath();
-						Commons.openPoCFile(path);
+						Commons.editWithVSCode(path);
 					}else{//其他都进行搜索
 						String host = selecteEntry.getPocfile();
 						String url= "https://www.google.com/search?q=site%3A"+host;

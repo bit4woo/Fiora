@@ -25,9 +25,80 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import run.TerminalExec;
-import run.Utils;
 
 public class Commons {
+	public static boolean isWindows() {
+		String OS_NAME = System.getProperties().getProperty("os.name").toLowerCase();
+		//System.out.println(OS_NAME);
+		if (OS_NAME.contains("windows")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean isWindows10() {
+		String OS_NAME = System.getProperties().getProperty("os.name").toLowerCase();
+		if (OS_NAME.equalsIgnoreCase("windows 10")) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isMac(){
+		String os = System.getProperty("os.name").toLowerCase();
+		//Mac
+		return (os.indexOf( "mac" ) >= 0); 
+	}
+
+	public static boolean isUnix(){
+		String os = System.getProperty("os.name").toLowerCase();
+		//linux or unix
+		return (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0);
+	}
+
+
+	public static void browserOpen(Object url,String browser) throws Exception{
+		String urlString = null;
+		URI uri = null;
+		if (url instanceof String) {
+			urlString = (String) url;
+			uri = new URI((String)url);
+		}else if (url instanceof URL) {
+			uri = ((URL)url).toURI();
+			urlString = url.toString();
+		}
+		if(browser == null ||browser.equalsIgnoreCase("default") || browser.equalsIgnoreCase("")) {
+			//whether null must be the first
+			Desktop desktop = Desktop.getDesktop();
+			if(Desktop.isDesktopSupported()&&desktop.isSupported(Desktop.Action.BROWSE)){
+				desktop.browse(uri);
+			}
+		}else {
+			Runtime runtime = Runtime.getRuntime();
+			runtime.exec(browser+" "+urlString);
+			//C:\Program Files\Mozilla Firefox\firefox.exe
+			//C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe
+		}
+	}
+
+	public static void OpenFolder(String path) throws IOException {
+		String program = null;
+		if (isWindows()){
+			program = "explorer.exe";
+		}else if(isMac()){
+			program = "open";
+		}else {
+			program = "nautilus";
+		}
+		if ((path.startsWith("\"") && path.endsWith("\"")) || (path.startsWith("'") && path.endsWith("'"))){
+
+		}else if (path.contains(" ")){
+			path = "\""+path+"\"";
+		}
+		String[] cmdArray = new String[] {program,path};
+		Runtime.getRuntime().exec(cmdArray);
+	}
 
 	public static String set2string(Set<?> set){
 		Iterator iter = set.iterator();
@@ -106,32 +177,6 @@ public class Commons {
 		return simpleDateFormat.format(new Date());
 	}
 
-
-	public static void browserOpen(Object url,String browser) throws Exception{
-		String urlString = null;
-		URI uri = null;
-		if (url instanceof String) {
-			urlString = (String) url;
-			uri = new URI((String)url);
-		}else if (url instanceof URL) {
-			uri = ((URL)url).toURI();
-			urlString = url.toString();
-		}
-		if(browser == null ||browser.equalsIgnoreCase("default") || browser.equalsIgnoreCase("")) {
-			//whether null must be the first
-			Desktop desktop = Desktop.getDesktop();
-			if(Desktop.isDesktopSupported()&&desktop.isSupported(Desktop.Action.BROWSE)){
-				desktop.browse(uri);
-			}
-		}else {
-			String[] cmdArray = new String[] {browser,urlString};
-
-			//runtime.exec(browser+" "+urlString);//当命令中有空格时会有问题
-			Runtime.getRuntime().exec(cmdArray);
-		}
-	}
-
-
 	public static byte[] buildCookieRequest(IExtensionHelpers helpers,String cookie, byte[] request) {
 		if (cookie != null && !cookie.equals("")){
 			if (!cookie.startsWith("Cookie: ")){
@@ -157,15 +202,6 @@ public class Commons {
 			portList.add(portint);
 		}
 		return portList;
-	}
-
-	public static boolean isWindows() {
-		String OS_NAME = System.getProperties().getProperty("os.name").toLowerCase();
-		if (OS_NAME.contains("windows")) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	public static ArrayList<String> regexFind(String regex,String content) {
@@ -246,34 +282,30 @@ public class Commons {
 		return result;
 	}
 
-	public static void openPoCFile(String filepath) {
-		if (TerminalExec.isInEnvironmentPath("code.cmd")) {
+	public static void editWithVSCode(String filepath) {
+		// /Applications/Visual Studio Code.app/Contents/MacOS/Electron
+		if (filepath.contains(" ")){
+			filepath = "\""+filepath+"\"";
+		}
+		if (isMac()) {
 			try {
-				String[] cmdArray = new String[] {"code.cmd","\""+filepath+"\""};
+				String[] cmdArray = new String[] {"/Applications/Visual Studio Code.app/Contents/MacOS/Electron",filepath};
 				Runtime.getRuntime().exec(cmdArray);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}else if (TerminalExec.isInEnvironmentPath("idle.bat")){
+		}
+		if (isWindows()) {
 			try {
-				String[] cmdArray = new String[] {"idle.bat","\""+filepath+"\""};
+				String[] cmdArray = new String[] {"code.cmd",filepath};
 				Runtime.getRuntime().exec(cmdArray);
 			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else {
-			try {
-				//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
-				File file = new File(filepath);
-				Utils.OpenFolder(file.getParent());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
 	public static void main(String args[]) {
-		openPoCFile("D:\\github\\POC-T\\script\\activemq-upload.py");
+		editWithVSCode("/Users/liwenjun/Documents/github/POC-T/script/F5-BIG-IP-bufferOverflow.py");
 	}
 }
