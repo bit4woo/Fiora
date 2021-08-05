@@ -48,7 +48,7 @@ public class MainGUI extends JFrame {
 		setBounds(100, 100, 1174, 497);
 		setContentPane(tabbedWrapper);
 		pocPanel = new PoCPanel();
-		tabbedWrapper.addTab("PoC", null, pocPanel, null);
+		tabbedWrapper.addTab("PoC-T", null, pocPanel, null);
 	}
 
 	public MainGUI(String poctRootPath){

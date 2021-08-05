@@ -90,7 +90,11 @@ public class PoCPanel extends JPanel {
 		LoadData(MainGUI.poctRootPath+File.separator+"script");
 	}
 
-	//D:\github\POC-T\script
+	/**
+	 * 扫描PoC-T中的poc脚本。D:\github\POC-T\script
+	 * @param dir
+	 * @return
+	 */
 	public IndexedLinkedHashMap<String,LineEntry> scanPoCFiles(String dir) {
 		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
 		if (null==dir || !new File(dir).exists()){
@@ -100,6 +104,26 @@ public class PoCPanel extends JPanel {
 		for (File file:files) {
 			//System.out.println(file.toString());
 			if (file.exists() && file.isFile() && !file.getName().startsWith("__")) {
+				LineEntry entry = new LineEntry(file.toString());
+				lineEntries.put(file.toString(), entry);
+			}
+		}
+		return lineEntries;
+	}
+	/**
+	 * 默认路径 /Users/bit4woo
+	 * @param dir
+	 * @return
+	 */
+	public IndexedLinkedHashMap<String,LineEntry> scanUncleiPoCs(String dir) {
+		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
+		if (null==dir || !new File(dir).exists()){
+			return lineEntries;
+		}
+		Collection<File> files = FileUtils.listFiles(new File(dir), FileFilterUtils.suffixFileFilter(".yaml"), DirectoryFileFilter.INSTANCE);
+		for (File file:files) {
+			//System.out.println(file.toString());
+			if (file.exists() && file.isFile()) {
 				LineEntry entry = new LineEntry(file.toString());
 				lineEntries.put(file.toString(), entry);
 			}

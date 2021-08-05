@@ -1,10 +1,5 @@
 package PoC;
 
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,6 +21,9 @@ public class LineEntry {
 	private String isPoCVerified = "false";//poc是否经过确认，真实有效
 	private String Author = "";//poc的作者
 	private String CVE = "";
+	private String pocname = ""; //unclei的字段
+	private String severity = ""; //unclei的字段
+	private String tags = ""; //unclei的字段
 
 	public String getPocFileFullPath() {
 		return pocFileFullPath;
@@ -123,16 +121,36 @@ public class LineEntry {
 		CVE = cVE;
 	}
 
+	public String getPocname() {
+		return pocname;
+	}
+
+	public void setPocname(String pocname) {
+		this.pocname = pocname;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
 	public static Logger getLog() {
 		return log;
 	}
 
-	LineEntry(){
+	public LineEntry(){
 
-	}
-
-	public LineEntry(String pocfile) {
-		parse(pocfile);
 	}
 
 	public String ToJson(){//注意函数名称，如果是get set开头，会被认为是Getter和Setter函数，会在序列化过程中被调用。
@@ -142,74 +160,6 @@ public class LineEntry {
 	public static LineEntry FromJson(String json){//注意函数名称，如果是get set开头，会被认为是Getter和Setter函数，会在序列化过程中被调用。
 		return new Gson().fromJson(json, LineEntry.class);
 	}
-
-	private void parse(String pocfile) {
-		File poc = new File(pocfile);
-		if (poc.exists() && poc.isFile()) {
-			try {
-				this.setPocFileFullPath(pocfile);
-				this.setPocfile(poc.getName());
-
-				String content = FileUtils.readFileToString(poc);
-
-				//final String DOMAIN_NAME_PATTERN = "__.*__s+=s+\\\"\\\"\\\".*\\\"\\\"\\\"";
-				//有问号的是非贪婪模式，不带问号就是贪婪模式，直到最后一个三引号。
-				final String DOMAIN_NAME_PATTERN = "__.*?__.*?\\\"\\\"\\\"[\\s\\S]*?\\\"\\\"\\\"";
-				Pattern pDomainNameOnly = Pattern.compile(DOMAIN_NAME_PATTERN);
-				Matcher matcher = pDomainNameOnly.matcher(content);
-				while (matcher.find()) {//多次查找
-					String found = matcher.group();
-					//System.out.println(found);
-					if (!(found.startsWith("__") && found.contains("="))) {
-						continue;
-					}
-					if (found.startsWith("__author__")) {
-						this.setAuthor(fetchValue(found));
-					}
-					if (found.startsWith("__CVE__")) {
-						this.setCVE(fetchValue(found));
-					}
-					if (found.startsWith("__VulnApp__")) {
-						this.setVulnApp(fetchValue(found));
-					}
-					if (found.startsWith("__VulnVersion__")) {
-						this.setVulnVersion(fetchValue(found));
-					}
-					if (found.startsWith("__VulnURL__")) {
-						this.setVulnURL(fetchValue(found));
-					}
-					if (found.startsWith("__VulnParameter__")) {
-						this.setVulnParameter(fetchValue(found));
-					}
-					if (found.startsWith("__VulnType__")) {
-						this.setVulnType(fetchValue(found));
-					}
-					if (found.startsWith("__VulnDescription__")) {
-						this.setVulnDescription(fetchValue(found));
-					}
-					if (found.startsWith("__Reference__")) {
-						this.setReference(fetchValue(found));
-					}
-					if (found.startsWith("__isPoCVerified__")) {
-						this.setIsPoCVerified(fetchValue(found));
-					}
-				}
-			}catch(Exception e) {
-				log.error(e);
-			}
-		}
-	}
-
-	public static String fetchValue(String line) {
-		line = line.split("=",2)[1].trim();
-		if (line.startsWith("\'\'\'") || line.startsWith("\"\"\"")) {
-			line = line.substring(3, line.length()-3);
-		}else if (line.startsWith("\'") || line.startsWith("\"")) {
-			line = line.substring(1, line.length()-1);
-		}
-		return line;
-	}
-
 
 	public String fetchDetail() {
 		StringBuilder detail = new StringBuilder();
@@ -246,9 +196,9 @@ public class LineEntry {
 		return detail.toString();
 	}
 
+	
+
 	public static void main(String args[]) {
 		String file1 = "D:\\github\\CVE-2019-3396_EXP\\RCE_exp.py";
-		LineEntry entry = new LineEntry(file1);
-		System.out.println(entry.ToJson());
 	}
 }

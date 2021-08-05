@@ -258,41 +258,7 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		JMenuItem RunItem = new JMenuItem(new AbstractAction("Run") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
-				RunPoCAction.run(pocFullPath);
-			}
-		});
-
-		JMenuItem RunWithPoCTItem = new JMenuItem(new AbstractAction("Run With PoC-T") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
-				RunPoCAction.runWithPoCT(targets, poc);
-			}
-		});
 		
-		JMenuItem genRunCmdItem = new JMenuItem(new AbstractAction("Gen Cmd To Run") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
-				String cmd = RunPoCAction.genCommand(pocFullPath);
-				Commons.writeToClipboard(cmd);
-			}
-		});
-
-		JMenuItem genRunCmdWithPoCTItem = new JMenuItem(new AbstractAction("Gen Cmd To Run With PoC-T") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
-				String cmd = RunPoCAction.genCommandWithPoCT(targets, poc);
-				Commons.writeToClipboard(cmd);
-			}
-		});
 
 		this.add(itemNumber);
 		this.addSeparator();
