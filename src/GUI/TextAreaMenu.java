@@ -1,4 +1,4 @@
-package PoC;
+package GUI;
 
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;

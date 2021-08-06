@@ -268,10 +268,6 @@ public class LineEntryMenu extends JPopupMenu {
 		this.add(renamePoCItem);
 
 		this.addSeparator();//run check
-		this.add(RunItem);
-		this.add(RunWithPoCTItem);
-		this.add(genRunCmdItem);
-		this.add(genRunCmdWithPoCTItem);
 		this.add(checkURLItem);
 
 		this.addSeparator();// copy

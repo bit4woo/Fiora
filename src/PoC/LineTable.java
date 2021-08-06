@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
+import GUI.TextAreaMouseListener;
 import PoC.search.History;
 import PoC.search.LineSearch;
 import burp.BurpExtender;

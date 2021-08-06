@@ -1,9 +1,16 @@
 package PoC;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
+
+import PoCParser.YamlInfo;
 
 public class LineEntry {
 	private static final Logger log=LogManager.getLogger(LineEntry.class);
@@ -159,6 +166,26 @@ public class LineEntry {
 
 	public static LineEntry FromJson(String json){//注意函数名称，如果是get set开头，会被认为是Getter和Setter函数，会在序列化过程中被调用。
 		return new Gson().fromJson(json, LineEntry.class);
+	}
+	
+	public static List<String> fetchFieldNames(){
+		Field[] fields = YamlInfo.class.getFields();
+		List<String> result = new ArrayList<String>();
+		for(Field field : fields){
+			result.add(field.getName());
+		}
+		return result;
+	}
+	
+	public String callGetter(String paraName) throws Exception {
+		Method[] methods = YamlInfo.class.getMethods();
+		for(Method method : methods){
+			if(method.getName().equalsIgnoreCase("get"+paraName)) {
+				Object result = method.invoke(this);
+				return (String)result;
+			}
+		}
+		return "";
 	}
 
 	public String fetchDetail() {

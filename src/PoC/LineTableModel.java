@@ -2,6 +2,7 @@ package PoC;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import PoCParser.YamlInfo;
 import burp.BurpExtender;
 import burp.Commons;
 import burp.IntArraySlice;
@@ -44,9 +46,11 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 	PrintWriter stdout;
 	PrintWriter stderr;
 
-	private static final String[] standardTitles = new String[] {
-			"#", "filename", "CVE", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","Verified"};
-	private static List<String> titletList = new ArrayList<>(Arrays.asList(standardTitles));
+//	private static final String[] standardTitles = new String[] {
+//			"#", "filename", "CVE", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","Verified"};
+//	
+//	private static List<String> titletList = new ArrayList<>(Arrays.asList(standardTitles));
+	private static List<String> titletList = LineEntry.fetchFieldNames();
 	//为了实现动态表结构
 	public static List<String> getTitletList() {
 		return titletList;
@@ -138,6 +142,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 	}
 
 
+
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
@@ -147,6 +152,14 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 		if (columnIndex == titletList.indexOf("#")) {
 			return rowIndex;
 		}
+		String titleName = titletList.get(columnIndex);
+		try {
+			return entry.callGetter(titleName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+		/*
 		if (columnIndex == titletList.indexOf("filename")){
 			return entry.getPocfile();
 		}
@@ -178,6 +191,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 			return entry.getIsPoCVerified();
 		}
 		return "";
+		*/
 	}
 
 

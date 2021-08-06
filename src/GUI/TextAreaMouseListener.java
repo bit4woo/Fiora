@@ -1,4 +1,4 @@
-package PoC;
+package GUI;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
