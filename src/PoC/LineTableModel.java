@@ -49,7 +49,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 //			"#", "filename", "CVE", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","Verified"};
 //	
 //	private static List<String> titletList = new ArrayList<>(Arrays.asList(standardTitles));
-	private static List<String> titletList = YamlInfo.fetchFieldNames();
+	private static List<String> titletList = LineEntry.fetchFieldNames();
 	
 	//为了实现动态表结构
 	public static List<String> getTitletList() {

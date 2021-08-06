@@ -90,7 +90,7 @@ public class PoCPanel extends JPanel {
 		titleTable = new LineTable(titleTableModel);
 		this.add(titleTable.getTableAndDetailSplitPane(),BorderLayout.CENTER);
 		//LoadData(MainGUI.poctRootPath+File.separator+"script");
-		LoadData("/Users/liwenjun/nuclei-templates");
+		LoadData(MainGUI.poctRootPath);
 	}
 
 	/**
@@ -240,7 +240,8 @@ public class PoCPanel extends JPanel {
 		buttonCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					File srcFile = new File(MainGUI.poctRootPath+File.separator+"script"+File.separator+"__AAA-Template.py");
+					File srcFile = new File(MainGUI.poctRootPath+File.separator+
+							"cve2"+File.separator+"2021"+File.separator+"CVE-2021-1497.yaml");
 					File destFile = getInputFile();
 					if (null !=destFile) {
 						FileUtils.copyFile(srcFile, destFile);
@@ -261,11 +262,11 @@ public class PoCPanel extends JPanel {
 						return null;
 					}
 					else if(!pocFileName.trim().equals("")) {
-						if (!pocFileName.endsWith(".py")) {
-							pocFileName = pocFileName+".py";
+						if (!pocFileName.endsWith(".yaml")) {
+							pocFileName = pocFileName+".yaml";
 						}
 
-						File destFile = new File(MainGUI.poctRootPath+File.separator+"script"+File.separator+pocFileName);
+						File destFile = new File(MainGUI.poctRootPath+File.separator+pocFileName);
 						if (destFile.exists()) {
 							initialSelectionValue = pocFileName;
 							continue;

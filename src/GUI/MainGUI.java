@@ -17,7 +17,7 @@ public class MainGUI extends JFrame {
 	public static File currentDBFile;
 	protected PrintWriter stdout;
 	protected PrintWriter stderr;
-	public static String poctRootPath ="D:\\github\\POC-T";
+	public static String poctRootPath = System.getProperty("user.home")+File.separator+"nuclei-templates";
 
 	public static PoCPanel getPoCPanel() {
 		return pocPanel;
@@ -49,6 +49,7 @@ public class MainGUI extends JFrame {
 		setContentPane(tabbedWrapper);
 		pocPanel = new PoCPanel();
 		tabbedWrapper.addTab("PoC-T", null, pocPanel, null);
+		tabbedWrapper.addTab("Options", null, pocPanel, null);
 	}
 
 	public MainGUI(String poctRootPath){

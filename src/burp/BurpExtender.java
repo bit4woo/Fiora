@@ -86,8 +86,9 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 		callbacks.registerContextMenuFactory(this);
 		callbacks.registerExtensionStateListener(this);
 
-		stdout.println("saving PoC-T Path to config: "+MainGUI.poctRootPath);
-		MainGUI.poctRootPath = BurpExtender.getCallbacks().loadExtensionSetting(BurpExtender.ExtenderName);
+		//TODO
+		//stdout.println("saving PoC-T Path to config: "+MainGUI.poctRootPath);
+		//MainGUI.poctRootPath = BurpExtender.getCallbacks().loadExtensionSetting(BurpExtender.ExtenderName);
 		gui = new MainGUI();
 		SwingUtilities.invokeLater(new Runnable()
 		{//create GUI
@@ -116,7 +117,8 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 
 	@Override
 	public void extensionUnloaded() {
-		BurpExtender.getCallbacks().saveExtensionSetting(BurpExtender.ExtenderName, MainGUI.poctRootPath);
-		stdout.println("saving PoC-T Path to config: "+MainGUI.poctRootPath);
+		//TODO
+		//BurpExtender.getCallbacks().saveExtensionSetting(BurpExtender.ExtenderName, MainGUI.poctRootPath);
+		//stdout.println("saving PoC-T Path to config: "+MainGUI.poctRootPath);
 	}
 }

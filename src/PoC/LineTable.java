@@ -105,7 +105,7 @@ public class LineTable extends JTable
 		LineEntry Entry = this.lineTableModel.getLineEntries().getValueAtIndex(super.convertRowIndexToModel(row));
 
 		this.lineTableModel.setCurrentlyDisplayedItem(Entry);
-		String detail = Entry.fetchDetail();
+		String detail = Entry.getDetail();
 		textAreaPoCDetail.setText(detail);
 		super.changeSelection(row, col, toggle, extend);
 	}

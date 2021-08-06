@@ -179,7 +179,7 @@ public class LineEntry {
 	}
 	
 	public static List<String> fetchFieldNames(){
-		Field[] fields = YamlInfo.class.getFields();
+		Field[] fields = YamlInfo.class.getDeclaredFields();
 		List<String> result = new ArrayList<String>();
 		for(Field field : fields){
 			result.add(field.getName());
@@ -187,21 +187,19 @@ public class LineEntry {
 		return result;
 	}
 	
-	public String callGetter(String paraName) throws Exception {
+	public Object callGetter(String paraName) throws Exception {
 		Method[] methods = YamlInfo.class.getMethods();
 		for(Method method : methods){
 			if(method.getName().equalsIgnoreCase("get"+paraName)) {
+				Class<?> returnType = method.getReturnType();
 				Object result = method.invoke(this);
-				return (String)result;
+				return returnType.cast(result);
 			}
 		}
 		return "";
 	}
-	
-	public String fetchDetail() {
-		
-	}
 
+	@Deprecated
 	public String fetchPoctDetail() {
 		StringBuilder detail = new StringBuilder();
 		detail.append("Vuln App:");
