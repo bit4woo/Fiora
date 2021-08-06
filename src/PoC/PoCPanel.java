@@ -215,7 +215,7 @@ public class PoCPanel extends JPanel {
 				}
 			}
 		});
-		buttonPanel.add(buttonFind);
+		//buttonPanel.add(buttonFind);
 
 		JButton buttonOpenDir = new JButton("Open Folder");
 		buttonPanel.add(buttonOpenDir);

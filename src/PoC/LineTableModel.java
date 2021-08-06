@@ -50,7 +50,8 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 //			"#", "filename", "CVE", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","Verified"};
 //	
 //	private static List<String> titletList = new ArrayList<>(Arrays.asList(standardTitles));
-	private static List<String> titletList = LineEntry.fetchFieldNames();
+	private static List<String> titletList = YamlInfo.fetchFieldNames();
+	
 	//为了实现动态表结构
 	public static List<String> getTitletList() {
 		return titletList;
@@ -66,6 +67,8 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 			stdout = new PrintWriter(System.out, true);
 			stderr = new PrintWriter(System.out, true);
 		}
+		titletList.add("#");
+		titletList.add("ID");
 		/*
 		关于这个listener，主要的目标的是当数据发生改变时，更新到数据库。通过fireTableRowsxxxx来触发。
 		但是clear()中对lineEntries的操作也触发了，注意

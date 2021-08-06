@@ -1,7 +1,9 @@
 package PoCParser;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +25,14 @@ public class YamlInfo {
 	public YamlInfo() {
 
 	}
-
-	public YamlInfo(String key,String value) {
-		System.out.println(value);
+	
+	public static List<String> fetchFieldNames(){
+		Field[] fields = YamlInfo.class.getFields();
+		List<String> result = new ArrayList<String>();
+		for(Field field : fields){
+			result.add(field.getName());
+		}
+		return result;
 	}
 
 	/**
