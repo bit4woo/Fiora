@@ -9,7 +9,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 public class HTTPPut {
 	public static void main(String[] args) {
 		request("get","https://rosetta.garenanow.com/transify/1366?lang=1",null,null);
-		String aa= 'aaa';
+		String aa = "aaa";
 		System.out.println(aa);
 	}
 	

@@ -9,10 +9,9 @@ import burp.IBurpCollaboratorClientContext;
 import burp.IBurpExtenderCallbacks;
 import burp.IHttpRequestResponse;
 import burp.IScannerInsertionPoint;
-import burp.j2ee.CustomScanIssueForColla;
 
 /**
- * 有三种输入格式：host+port\url\burp数据包
+ * 有三种输入格式：host+port url burp数据包
  * 核心是URL，host+port构造成URL
  * Burp数据包，解析成URL+headers+body
  * 

@@ -2,7 +2,6 @@ package PoC;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,8 +66,8 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 			stdout = new PrintWriter(System.out, true);
 			stderr = new PrintWriter(System.out, true);
 		}
-		titletList.add("#");
-		titletList.add("ID");
+		titletList.add(0,"#");
+		titletList.add(1,"ID");
 		/*
 		关于这个listener，主要的目标的是当数据发生改变时，更新到数据库。通过fireTableRowsxxxx来触发。
 		但是clear()中对lineEntries的操作也触发了，注意
@@ -77,6 +76,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 		this.addTableModelListener(new TableModelListener() {//表格模型监听
 			@Override
 			public void tableChanged(TableModelEvent e) {
+				
 			}
 		});
 	}

@@ -18,7 +18,7 @@ import PoC.LineEntry;
 public class PoctParser {
 	private static final Logger log=LogManager.getLogger(PoctParser.class);
 	
-	public LineEntry Parser(String pocfile) {
+	public static LineEntry Parser(String pocfile) {
 		LineEntry result = new LineEntry();
 		File poc = new File(pocfile);
 		if (poc.exists() && poc.isFile()) {

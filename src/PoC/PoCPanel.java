@@ -25,6 +25,8 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import GUI.MainGUI;
 import PoC.search.SearchTextField;
+import PoCParser.NucleiParser;
+import PoCParser.PoctParser;
 import burp.BurpExtender;
 import burp.Commons;
 
@@ -87,7 +89,8 @@ public class PoCPanel extends JPanel {
 
 		titleTable = new LineTable(titleTableModel);
 		this.add(titleTable.getTableAndDetailSplitPane(),BorderLayout.CENTER);
-		LoadData(MainGUI.poctRootPath+File.separator+"script");
+		//LoadData(MainGUI.poctRootPath+File.separator+"script");
+		LoadData("/Users/liwenjun/nuclei-templates");
 	}
 
 	/**
@@ -104,7 +107,7 @@ public class PoCPanel extends JPanel {
 		for (File file:files) {
 			//System.out.println(file.toString());
 			if (file.exists() && file.isFile() && !file.getName().startsWith("__")) {
-				LineEntry entry = new LineEntry(file.toString());
+				LineEntry entry = PoctParser.Parser(file.toString());
 				lineEntries.put(file.toString(), entry);
 			}
 		}
@@ -124,7 +127,7 @@ public class PoCPanel extends JPanel {
 		for (File file:files) {
 			//System.out.println(file.toString());
 			if (file.exists() && file.isFile()) {
-				LineEntry entry = new LineEntry(file.toString());
+				LineEntry entry = NucleiParser.Parser(file.toString());
 				lineEntries.put(file.toString(), entry);
 			}
 		}
@@ -186,7 +189,8 @@ public class PoCPanel extends JPanel {
 			System.out.println("==Start Loading Data From: " + dir+"==");
 			stdout.println("==Start Loading Data From: " + dir+"==");
 
-			showToPoCPanel(scanPoCFiles(dir));
+			//showToPoCPanel(scanPoCFiles(dir));
+			showToPoCPanel(scanUncleiPoCs(dir));
 
 			System.out.println("==End Loading Data From: "+ dir +"==");//输出到debug console
 			stdout.println("==End Loading Data From: "+ dir +"==");

@@ -31,6 +31,7 @@ public class LineEntry {
 	private String pocname = ""; //unclei的字段
 	private String severity = ""; //unclei的字段
 	private String tags = ""; //unclei的字段
+	private String detail = ""; //存储nuclei中的文件内容。
 
 	public String getPocFileFullPath() {
 		return pocFileFullPath;
@@ -151,6 +152,15 @@ public class LineEntry {
 	public void setTags(String tags) {
 		this.tags = tags;
 	}
+	
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
 
 	public static Logger getLog() {
 		return log;
@@ -187,8 +197,12 @@ public class LineEntry {
 		}
 		return "";
 	}
-
+	
 	public String fetchDetail() {
+		
+	}
+
+	public String fetchPoctDetail() {
 		StringBuilder detail = new StringBuilder();
 		detail.append("Vuln App:");
 		detail.append(System.lineSeparator());

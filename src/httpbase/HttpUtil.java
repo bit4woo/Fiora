@@ -8,7 +8,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 
 public class HttpUtil {
 	public static void main(String[] args) {
-		request("get","https://rosetta.garenanow.com/transify/1366?lang=1",null,null);
+		//request("get","https://rosetta.garenanow.com/transify/1366?lang=1",null,null);
 	}
 	
 	/**
@@ -40,11 +40,11 @@ public class HttpUtil {
 		if (body != null) {
 			request.send(body);
 		}
-		return response
+		
 		System.out.println(request.headers());
 		System.out.println(request.bytes());
 		System.out.println(request.body());
-		
+		return request.bytes();
 		
 	};
 }

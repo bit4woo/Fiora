@@ -27,7 +27,7 @@ import PoC.LineEntry;
 public class NucleiParser {
 	private static final Logger log=LogManager.getLogger(NucleiParser.class);
 
-	public LineEntry Parser(String pocfile) {
+	public static LineEntry Parser(String pocfile) {
 		LineEntry result = new LineEntry();
 		File poc = new File(pocfile);
 		if (poc.exists() && poc.isFile()) {
@@ -48,7 +48,8 @@ public class NucleiParser {
 				result.setSeverity(info.getSeverity());
 				result.setVulnDescription(info.getDescription());
 				result.setReference(info.getReference());
-
+				
+				result.setDetail(content);
 				return result;
 			}catch(Exception e) {
 				log.error(e);

@@ -27,7 +27,7 @@ public class YamlInfo {
 	}
 	
 	public static List<String> fetchFieldNames(){
-		Field[] fields = YamlInfo.class.getFields();
+		Field[] fields = YamlInfo.class.getDeclaredFields();
 		List<String> result = new ArrayList<String>();
 		for(Field field : fields){
 			result.add(field.getName());
@@ -122,6 +122,10 @@ public class YamlInfo {
 	public String toString() {
 		return "PocInfo [name=" + name + ", author=" + author + ", severity=" + severity + ", description="
 				+ description + ", reference=" + reference + ", tags=" + tags + "]";
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(fetchFieldNames());
 	}
 
 }
