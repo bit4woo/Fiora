@@ -45,17 +45,12 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 	PrintWriter stdout;
 	PrintWriter stderr;
 
-//	private static final String[] standardTitles = new String[] {
-//			"#", "filename", "CVE", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","Verified"};
-//	
-//	private static List<String> titletList = new ArrayList<>(Arrays.asList(standardTitles));
-	private static List<String> titletList = LineEntry.fetchFieldNames();
-	
+	private static List<String> titletList = LineEntry.fetchTableHeaderList();//还是需要删减字段
+
 	//为了实现动态表结构
 	public static List<String> getTitletList() {
 		return titletList;
 	}
-
 
 	public LineTableModel(){
 
@@ -66,8 +61,6 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 			stdout = new PrintWriter(System.out, true);
 			stderr = new PrintWriter(System.out, true);
 		}
-		titletList.add(0,"#");
-		titletList.add(1,"ID");
 		/*
 		关于这个listener，主要的目标的是当数据发生改变时，更新到数据库。通过fireTableRowsxxxx来触发。
 		但是clear()中对lineEntries的操作也触发了，注意
@@ -150,6 +143,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
 		LineEntry entry = lineEntries.getValueAtIndex(rowIndex);
+		if (entry == null) return "";
 		//entry.parse();---
 		//"#", "filename", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Reference","isPoCVerified", "22","33"};
 		if (columnIndex == titletList.indexOf("#")) {
@@ -157,7 +151,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 		}
 		String titleName = titletList.get(columnIndex);
 		try {
-			return entry.callGetter(titleName);
+			return entry.fetchValue(titleName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";

@@ -128,6 +128,9 @@ public class PoCPanel extends JPanel {
 			//System.out.println(file.toString());
 			if (file.exists() && file.isFile()) {
 				LineEntry entry = NucleiParser.Parser(file.toString());
+				if (entry == null){
+					continue;
+				}
 				lineEntries.put(file.toString(), entry);
 			}
 		}

@@ -165,23 +165,13 @@ public class LineTable extends JTable
 		FontMetrics fm = this.getFontMetrics(f);
 		int width = fm.stringWidth("A");//一个字符的宽度
 
-		//{"#", "filename", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Refrence","isPoCVerified", "22","33"};
-		Map<String,Integer> preferredWidths = new HashMap<String,Integer>();
-		preferredWidths.put("#",5);
-		preferredWidths.put("filename",30);
-		preferredWidths.put("VulnApp",10);
-		preferredWidths.put("VulnVersion",20);
-		preferredWidths.put("VulnURL",30);
-		preferredWidths.put("VulnParameter","VulnParameter".length());
-		preferredWidths.put("VulnType",10);
-		preferredWidths.put("VulnDescription",30);
-		preferredWidths.put("Refrence",30);
-		preferredWidths.put("Verified","Verified".length());
-		preferredWidths.put("CVE","CVE-2019-1234567".length());
+		Map<String,Integer> preferredWidths = LineEntry.fetchTableHeaderAndWidth();
+
 		for(String header:LineTableModel.getTitletList()){
 			try{//避免动态删除表字段时，出错
 				int multiNumber = preferredWidths.get(header);
-				this.getColumnModel().getColumn(this.getColumnModel().getColumnIndex(header)).setPreferredWidth(width*multiNumber);
+				this.getColumnModel().getColumn(this.getColumnModel().getColumnIndex(header))
+				.setPreferredWidth(width*multiNumber);
 			}catch (Exception e){
 
 			}

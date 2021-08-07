@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
@@ -38,21 +39,24 @@ public class NucleiParser {
 				String content = FileUtils.readFileToString(poc);
 
 				//解析yaml
-				YamlBeanFromJson bean = yamlToBean(pocfile);
+				YamlBeanFromJson bean = yamlToBeanWithFastJson(pocfile);
 
 				result.setCVE(bean.getId());
 
 				YamlInfo info = bean.getInfo();
-				result.setPocname(info.getName());
+				result.setPocfile(info.getName());
 				result.setAuthor(info.getAuthor());
 				result.setSeverity(info.getSeverity());
 				result.setVulnDescription(info.getDescription());
 				result.setReference(info.getReference());
+				result.setTags(info.getTags());
 				
 				result.setDetail(content);
 				return result;
 			}catch(Exception e) {
 				log.error(e);
+				result.setVulnDescription(poc.getName()+"parser error!");
+				return result;
 			}
 		}
 		return null;
@@ -123,18 +127,39 @@ public class NucleiParser {
 		Map<String,Object> map= (Map<String, Object>) yaml.load(new FileReader(yamlString));
 
 		JSONObject jsonObject=new JSONObject(map);
-		System.out.println(jsonObject.toString());
+		//System.out.println(jsonObject.toString());
 		return jsonObject.toString();
 	}
 
-	public static YamlBeanFromJson yamlToBean(String yamlFile) throws Exception{
+	/**
+	 * 使用google json解析
+	 * @param yamlFile
+	 * @return
+	 * @throws Exception
+	 */
+	@Deprecated //Expected a string but was BEGIN_ARRAY at line 1 column 351 path $.info.reference
+	public static YamlBeanFromJson yamlToBeanWithGson(String yamlFile) throws Exception{
 		String jsonStr = convertYamlToJson(yamlFile);
 		YamlBeanFromJson tmp = new Gson().fromJson(jsonStr, YamlBeanFromJson.class);
 		return tmp;
 	}
+	
+	/**
+	 * 使用fastjson解析
+	 * @param yamlFile
+	 * @return
+	 * @throws Exception
+	 */
+	public static YamlBeanFromJson yamlToBeanWithFastJson(String yamlFile) throws Exception{
+		String jsonStr = convertYamlToJson(yamlFile);
+		YamlBeanFromJson tmp = JSON.parseObject(jsonStr, YamlBeanFromJson.class);
+		return tmp;
+	}
 
 	public static void main (String[] args) throws Exception {
-		YamlBeanFromJson bean = yamlToBean("/Users/liwenjun/nuclei-templates/cves/2007/CVE-2007-4556.yaml");
-		int a=1;
+		yamlToBeanWithGson("C:\\Users\\P52\\nuclei-templates\\cves\\2014\\CVE-2014-2321.yaml");
+		yamlToBeanWithFastJson("C:\\Users\\P52\\nuclei-templates\\cves\\2014\\CVE-2014-2321.yaml");
+//		YamlBeanFromJson bean = yamlToBean("/Users/liwenjun/nuclei-templates/cves/2007/CVE-2007-4556.yaml");
+//		int a=1;
 	}
 }

@@ -3,14 +3,17 @@ package PoC;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
-
-import PoCParser.YamlInfo;
 
 public class LineEntry {
 	private static final Logger log=LogManager.getLogger(LineEntry.class);
@@ -28,11 +31,28 @@ public class LineEntry {
 	private String isPoCVerified = "false";//poc是否经过确认，真实有效
 	private String Author = "";//poc的作者
 	private String CVE = "";
-	private String pocname = ""; //unclei的字段
 	private String severity = ""; //unclei的字段
 	private String tags = ""; //unclei的字段
 	private String detail = ""; //存储nuclei中的文件内容。
+	
+	public static LinkedHashMap<String,Integer> fetchTableHeaderAndWidth(){
+		LinkedHashMap<String,Integer> preferredWidths = new LinkedHashMap<String,Integer>();
+		preferredWidths.put("#",5);
+		preferredWidths.put("pocfile",30);
+		preferredWidths.put("CVE","CVE-2019-1234567".length());
+		preferredWidths.put("severity",10);
+		preferredWidths.put("tags",10);
+		preferredWidths.put("VulnDescription",30);
+		preferredWidths.put("Reference",30);
+		preferredWidths.put("Author",10);
+		return preferredWidths;
+	}
 
+	public static List<String> fetchTableHeaderList(){
+		LinkedHashMap<String, Integer> headers = fetchTableHeaderAndWidth();
+		List<String> keys = new ArrayList<>(headers.keySet());//这样不会有问题吗？
+		return keys;
+	}
 	public String getPocFileFullPath() {
 		return pocFileFullPath;
 	}
@@ -129,14 +149,6 @@ public class LineEntry {
 		CVE = cVE;
 	}
 
-	public String getPocname() {
-		return pocname;
-	}
-
-	public void setPocname(String pocname) {
-		this.pocname = pocname;
-	}
-
 	public String getSeverity() {
 		return severity;
 	}
@@ -179,7 +191,7 @@ public class LineEntry {
 	}
 	
 	public static List<String> fetchFieldNames(){
-		Field[] fields = YamlInfo.class.getDeclaredFields();
+		Field[] fields = LineEntry.class.getDeclaredFields();
 		List<String> result = new ArrayList<String>();
 		for(Field field : fields){
 			result.add(field.getName());
@@ -187,8 +199,9 @@ public class LineEntry {
 		return result;
 	}
 	
+	@Deprecated
 	public Object callGetter(String paraName) throws Exception {
-		Method[] methods = YamlInfo.class.getMethods();
+		Method[] methods = LineEntry.class.getMethods();
 		for(Method method : methods){
 			if(method.getName().equalsIgnoreCase("get"+paraName)) {
 				Class<?> returnType = method.getReturnType();
@@ -198,46 +211,15 @@ public class LineEntry {
 		}
 		return "";
 	}
-
-	@Deprecated
-	public String fetchPoctDetail() {
-		StringBuilder detail = new StringBuilder();
-		detail.append("Vuln App:");
-		detail.append(System.lineSeparator());
-		detail.append(this.getVulnApp());
-		detail.append(System.lineSeparator()+System.lineSeparator());
-
-		detail.append("Vuln Version:");
-		detail.append(System.lineSeparator());
-		detail.append(this.getVulnVersion());
-		detail.append(System.lineSeparator()+System.lineSeparator());
-
-		detail.append("Vuln URL:");
-		detail.append(System.lineSeparator());
-		detail.append(this.getVulnURL());
-		detail.append(System.lineSeparator()+System.lineSeparator());
-
-		detail.append("Vuln Parameter:");
-		detail.append(System.lineSeparator());
-		detail.append(this.getVulnParameter());
-		detail.append(System.lineSeparator()+System.lineSeparator());
-
-		detail.append("Vuln Description:");
-		detail.append(System.lineSeparator());
-		detail.append(this.getVulnDescription());
-		detail.append(System.lineSeparator()+System.lineSeparator());
-
-		detail.append("Vuln Reference:");
-		detail.append(System.lineSeparator());
-		detail.append(this.getReference());
-		detail.append(System.lineSeparator()+System.lineSeparator());
-
-		return detail.toString();
+	
+	public Object fetchValue(String paraName) throws Exception {
+		//Field[] fields = LineEntry.class.getDeclaredFields();
+		Field field = LineEntry.class.getDeclaredField(paraName);
+		return field.get(this);
 	}
-
 	
 
 	public static void main(String args[]) {
-		String file1 = "D:\\github\\CVE-2019-3396_EXP\\RCE_exp.py";
+		System.out.println(fetchTableHeaderList());
 	}
 }
