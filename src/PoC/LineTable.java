@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JScrollPane;
@@ -201,10 +200,8 @@ public class LineTable extends JTable
 	}
 
 	//搜索功能函数
-	public void search(String Inputkeyword) {
-		History.getInstance().addRecord(Inputkeyword);//记录搜索历史,单例模式
-
-		final String keyword = Inputkeyword.trim().toLowerCase();
+	public void search(String Input) {
+		History.getInstance().addRecord(Input);//记录搜索历史,单例模式
 
 		final RowFilter filter = new RowFilter() {
 			@Override
@@ -213,7 +210,23 @@ public class LineTable extends JTable
 				int row = (int) entry.getIdentifier();
 				LineEntry line = rowSorter.getModel().getLineEntries().getValueAtIndex(row);
 
-				return LineSearch.textFilte(line,keyword);
+				//目前只处理&&（and）逻辑的表达式
+				if (Input.contains("&&")) {
+					String[] searchConditions = Input.split("&&");
+					for (String condition:searchConditions) {
+						if (oneCondition(condition,line)) {
+							continue;
+						}else {
+							return false;
+						}
+					}
+					return true;
+				}else {
+					return oneCondition(Input,line);
+				}
+			}
+			public boolean oneCondition(String Input,LineEntry line) {
+				return LineSearch.textFilter(line,Input);
 			}
 		};
 		rowSorter.setRowFilter(filter);

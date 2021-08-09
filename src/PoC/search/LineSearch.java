@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import PoC.LineEntry;
 
 public class LineSearch {
-	public static boolean textFilte(LineEntry line,String keyword) {
+	public static boolean textFilter(LineEntry line,String keyword) {
 		if (keyword.length() == 0) {
 			return true;
 		}else {//全局搜索
@@ -16,7 +16,7 @@ public class LineSearch {
 		}
 	}
 
-	public static boolean regexFilte(LineEntry line,String regex) {
+	public static boolean regexFilter(LineEntry line,String regex) {
 		//BurpExtender.getStdout().println("regexFilte: "+regex);
 		Pattern pRegex = Pattern.compile(regex);
 
