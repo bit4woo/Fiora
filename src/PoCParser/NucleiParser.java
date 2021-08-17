@@ -109,7 +109,7 @@ public class NucleiParser {
 
 		ObjectMapper jsonWriter = new ObjectMapper();
 		String jsonstr = jsonWriter.writeValueAsString(obj);
-		System.out.println(jsonstr);
+		//System.out.println(jsonstr);
 		return jsonstr;
 	}
 
