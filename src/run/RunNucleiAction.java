@@ -28,6 +28,9 @@ public class RunNucleiAction{
 				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
 				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
+			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
+				para = "-proxy http://127.0.0.1";
+			}
 
 			String command = TerminalExec.genCmd(null,"nuclei",para);
 			return command;
@@ -51,6 +54,10 @@ public class RunNucleiAction{
 				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
 				para = "-tags "+tags.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
+			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
+				para = "-proxy http://127.0.0.1";
+			}
+			
 
 			String command = TerminalExec.genCmd(null,"nuclei",para);
 			return command;
