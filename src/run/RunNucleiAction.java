@@ -15,30 +15,21 @@ public class RunNucleiAction{
 	public PrintWriter stdout;
 	public PrintWriter stderr;
 	
-	static String para = "";
-	static String poctPath = "";
 	
-	public static String genCommandWithPoCT(List<String> targets,String poc) {
+	public static String genCommand(List<String> targets,String poc) {
 		try{
-			para = "";
+			String para = "";
 			if (targets.size() <=0) {
-				para = "-s "+poc.trim()+" -iS YourTarget";
+				para = "--helps ";
 			}else if (targets.size() ==1) {
-				para = "-s "+poc.trim()+" -iS "+targets.get(0);
+				para = "-t "+poc.trim()+" -u "+targets.get(0);
 			}else {
 				File tmpTargets = new File("tmpTargets.txt");
 				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
-				para = "-s "+poc.trim()+" -iF "+tmpTargets.getAbsolutePath();
+				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 
-			poctPath = "PoC-T.py";
-			if (new File(MainGUI.poctRootPath).exists()) {
-				poctPath  = MainGUI.poctRootPath+File.separator+"PoC-T.py";
-			}
-			//POC-T.py -s cas-deser-RCE -iS 127.0.0.1
-
-			RobotInput ri = new RobotInput();
-			String command = RobotInput.genCmd("python",poctPath,para);
+			String command = TerminalExec.genCmd(null,"nuclei",para);
 			return command;
 		}
 		catch (Exception e1)
@@ -48,48 +39,42 @@ public class RunNucleiAction{
 		}
 	}
 	
-	public static String genCommand(String poc) {
-		String command = RobotInput.genCmd("python",poc,"");
-		return command;
-	}
-
-	public static void runWithPoCT(List<String> targets,String poc) {
+	public static String genTagsCommand(List<String> targets,String tags) {
 		try{
-			boolean useRobot = (PoCPanel.rdbtnUseRobotInput.isSelected());
-			if (useRobot) {
-				RobotInput.startCmdConsole();//尽早启动减少出错概率
-			}
-			
-			String command = genCommandWithPoCT(targets,poc);
-			
-			RobotInput ri = new RobotInput();
-			if (useRobot) {
-				ri.inputString(command);
+			String para = "";
+			if (targets.size() <=0) {
+				para = "--helps ";
+			}else if (targets.size() ==1) {
+				para = "-tags "+tags.trim()+" -u "+targets.get(0);
 			}else {
-				TerminalExec exec = new TerminalExec(null,"poct-fiora.bat","python",poctPath,para);
-				exec.run();
+				File tmpTargets = new File("tmpTargets.txt");
+				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
+				para = "-tags "+tags.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
+
+			String command = TerminalExec.genCmd(null,"nuclei",para);
+			return command;
 		}
 		catch (Exception e1)
 		{
 			e1.printStackTrace();
+			return null;
 		}
 	}
 
-	public static void run(String poc) {
+	public static void run(String command) {
 		try{
 			boolean useRobot = (PoCPanel.rdbtnUseRobotInput.isSelected());
 			if (useRobot) {
 				RobotInput.startCmdConsole();//尽早启动减少出错概率
 			}
-
+			
 			RobotInput ri = new RobotInput();
 			if (useRobot) {
-				String command = RobotInput.genCmd("python",poc,"");
 				ri.inputString(command);
 			}else {
-				TerminalExec exec = new TerminalExec(null,"poct-fiora.bat","python",poc,"");
-				exec.run();
+				String batFile = TerminalExec.genBatchFile(command, "Nuclei.bat");
+				TerminalExec.runBatchFile(batFile);
 			}
 		}
 		catch (Exception e1)
@@ -99,6 +84,5 @@ public class RunNucleiAction{
 	}
 
 	public static void main(String[] args){
-		genCommandWithPoCT(new ArrayList<String>(),"poc.py");
 	}
 }

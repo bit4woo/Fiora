@@ -3,6 +3,9 @@ package PoC;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.PrintWriter;
@@ -202,14 +205,14 @@ public class LineTable extends JTable
 	//搜索功能函数
 	public void search(String Input) {
 		History.getInstance().addRecord(Input);//记录搜索历史,单例模式
-
+		
 		final RowFilter filter = new RowFilter() {
 			@Override
 			public boolean include(Entry entry) {
 				//entry --- a non-null object that wraps the underlying object from the model
 				int row = (int) entry.getIdentifier();
 				LineEntry line = rowSorter.getModel().getLineEntries().getValueAtIndex(row);
-
+				
 				//目前只处理&&（and）逻辑的表达式
 				if (Input.contains("&&")) {
 					String[] searchConditions = Input.split("&&");
@@ -226,6 +229,7 @@ public class LineTable extends JTable
 				}
 			}
 			public boolean oneCondition(String Input,LineEntry line) {
+				Input = Input.toLowerCase();
 				return LineSearch.textFilter(line,Input);
 			}
 		};
@@ -246,12 +250,9 @@ public class LineTable extends JTable
 					int col = ((LineTable) e.getSource()).columnAtPoint(e.getPoint()); // 获得列位置
 
 					LineEntry selecteEntry = LineTable.this.lineTableModel.getLineEntries().getValueAtIndex(rows[0]);
-					if ((col==0 || col == 1)) {//双击Index或文件名。打开文件
-						String path = selecteEntry.getPocFileFullPath();
-						Commons.editWithVSCode(path);
-					}else{//其他都进行搜索
-						String host = selecteEntry.getPocfile();
-						String url= "https://www.google.com/search?q=site%3A"+host;
+					if (col==0) {//双击Index 搜索CVE字段
+						String cve = selecteEntry.getCVE();
+						String url= "https://www.google.com/search?q="+cve;
 						try {
 							URI uri = new URI(url);
 							Desktop desktop = Desktop.getDesktop();
@@ -261,12 +262,20 @@ public class LineTable extends JTable
 						} catch (Exception e2) {
 							e2.printStackTrace();
 						}
+					}else if(col==1){//双击文件名。打开文件
+						String path = selecteEntry.getPocFileFullPath();
+						Commons.editWithVSCode(path);
+					}else{
+						String value = LineTable.this.lineTableModel.getValueAt(rows[0],col).toString();
+						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+						StringSelection selection = new StringSelection(value);
+						clipboard.setContents(selection, null);
 					}
 				}
 			}
 
 			@Override//title表格中的鼠标右键菜单
-			public void mouseReleased( MouseEvent e ){
+			public void mouseReleased(MouseEvent e){
 				if ( SwingUtilities.isRightMouseButton( e )){
 					if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
 						//getSelectionModel().setSelectionInterval(rows[0], rows[1]);

@@ -21,55 +21,10 @@ import burp.Commons;
  */
 public class TerminalExec {
 
-	String workdir;
-	String cmdContent;
-	String FullBatchFilePath;
-
-	public String getWorkdir() {
-		return workdir;
-	}
-
-	public void setWorkdir(String workdir) {
-		this.workdir = workdir;
-	}
-
-	public String getCmdContent() {
-		return cmdContent;
-	}
-
-	public void setCmdContent(String cmdContent) {
-		this.cmdContent = cmdContent;
-	}
-
-	public String getFullBatchFilePath() {
-		return FullBatchFilePath;
-	}
-
-	public void setFullBatchFilePath(String fullBatchFilePath) {
-		FullBatchFilePath = fullBatchFilePath;
-	}
-
-	/*
-	 * workdir --the dir of batch file
-	 *  
-	 */
-	public TerminalExec(String workdir, String batchFileName,String parserPath,String executerPath, String parameter){
-		if (workdir == null) {
-			workdir = (String) System.getProperties().get("java.io.tmpdir");
-		}
-		cmdContent = changeDirCommand(workdir);
-		cmdContent = cmdContent +genCmd(parserPath,executerPath,parameter);
-		FullBatchFilePath = genBatchFile(cmdContent,batchFileName);
-	}
-
-	public void run() {
-		executeBatchFile(FullBatchFilePath);
-	}
-
 	/*
 	 * 通知执行bat文件来执行命令
 	 */
-	public static Process executeBatchFile(String batfilepath) {
+	public static Process runBatchFile(String batfilepath) {
 		String command = "";
 		if (Commons.isWindows()) {
 			command="cmd /c start " + batfilepath;
@@ -91,7 +46,7 @@ public class TerminalExec {
 		}
 	}
 
-	public String genBatchFile(String cmdContent, String batchFileName) {
+	public static String genBatchFile(String cmdContent, String batchFileName) {
 		try {
 			//将命令写入剪切板
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -106,6 +61,7 @@ public class TerminalExec {
 				batchFileName = batchFileName+".bat";
 			}
 
+			String workdir = System.getProperty("user.home");
 			File batFile = new File(workdir,batchFileName);
 			if (!batFile.exists()) {
 				batFile.createNewFile();
@@ -151,8 +107,7 @@ public class TerminalExec {
 			command.append(" ");
 		}
 
-		if ((executerPath != null && new File(executerPath).exists() && new File(executerPath).isFile())
-				|| isInEnvironmentPath(executerPath)){
+		if (executerPath != null){
 
 			if (executerPath.contains(" ")) {
 				executerPath = "\""+executerPath+"\"";//如果路径中包含空格，需要引号
@@ -203,7 +158,5 @@ public class TerminalExec {
 
 	public static void main(String[] args) {
 		System.out.println(isInEnvironmentPath("nmap.exe"));
-		TerminalExec xxx = new TerminalExec(null,"nmap-test.bat",null,"nmap.exe","-v -A www.baidu.com");
-		xxx.run();
 	}
 }

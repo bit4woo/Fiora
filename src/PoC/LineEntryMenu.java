@@ -15,12 +15,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import org.apache.commons.io.FileUtils;
-
 import GUI.MainGUI;
 import burp.BurpExtender;
 import burp.Commons;
-import run.RunPoCAction;
+import run.RunNucleiAction;
 
 public class LineEntryMenu extends JPopupMenu {
 
@@ -51,7 +49,7 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 		//one line
-		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit With VSCode(Double Click Index)") {
+		JMenuItem editPoCItem = new JMenuItem(new AbstractAction("Edit With VSCode(Double Click PoCFile)") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -60,37 +58,6 @@ public class LineEntryMenu extends JPopupMenu {
 				LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = selecteEntry.getPocFileFullPath();
 				Commons.editWithVSCode(path);
-			}
-		});
-
-		//one line
-		JMenuItem renamePoCItem = new JMenuItem(new AbstractAction("Rename") {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				if (rows.length >=50) {
-					return;
-				}
-
-				try {
-					LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
-					String path = selecteEntry.getPocFileFullPath();
-					File srcFile = new File(path);
-
-					String oldname = selecteEntry.getPocfile();
-
-					String pocFileName = JOptionPane.showInputDialog("New Name", oldname);
-					if (pocFileName != null && !pocFileName.trim().equals("")) {
-						if (!pocFileName.endsWith(".py")) {
-							pocFileName = pocFileName+".py";
-						}
-						File destFile = new File(MainGUI.poctRootPath+File.separator+"script"+File.separator+pocFileName);
-
-						FileUtils.moveFile(srcFile, destFile);
-						PoCPanel.buttonFresh.doClick();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			}
 		});
 
@@ -110,7 +77,7 @@ public class LineEntryMenu extends JPopupMenu {
 		});
 
 		//multiple line
-		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy Full Path") {
+		JMenuItem copyFilePathItem = new JMenuItem(new AbstractAction("Copy File Path") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (rows.length >=50) {
@@ -130,62 +97,77 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		//multiple line
-		JMenuItem copyVulnUrlItem = new JMenuItem(new AbstractAction("Copy The vuln URL") {
+		
+		/**
+		 * nuclei -u 127.0.0.1 -t CVE-2020-3580.yaml
+		 */
+		JMenuItem genSinglePoCCmd = new JMenuItem(new AbstractAction("Generate Command Of This PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				if (rows.length >=50) {
-					return;
-				}
-				List<String> paths = new ArrayList<String>();
-				for (int row:rows) {
-					LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(row);
-					String path = entry.getPocFileFullPath();
-					paths.add(path);
-				}
-				String textUrls = String.join(System.lineSeparator(), paths);
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				StringSelection selection = new StringSelection(textUrls);
-				clipboard.setContents(selection, null);
-
-			}
-		});
-
-		//one line
-		JMenuItem checkURLItem = new JMenuItem(new AbstractAction("Check The Vuln URL") {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				if (rows.length >=50) {
-					return;
-				}
 				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
-				String path = entry.getVulnURL();
+				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				for (String target:targets) {
-					if (target.trim().equals("")) {
-						continue;
-					}else if (target.startsWith("http")) {
-						String url = Commons.getShortUrl(target);
-						if (path.startsWith("/")) {
-							path = path.replaceFirst("/", "");
-						}
-						url = url+path;
-						try {
-							Commons.browserOpen(url, null);
-						} catch (Exception e) {
-							e.printStackTrace(stderr);
-						}
-					}else {
-						String url= String.format("http://%s%s",target, path);
-						String url1= String.format("http://%s%s",target, path);
-						try {
-							Commons.browserOpen(url, null);
-							Commons.browserOpen(url1, null);
-						} catch (Exception e) {
-							e.printStackTrace(stderr);
-						}
-					}
-				}
+				String Command = RunNucleiAction.genCommand(targets, path);
+				
+				Commons.writeToClipboard(Command);
+			}
+		});
+
+		/**
+		 * nuclei -u 127.0.0.1 -t CVE-2020-3580.yaml
+		 */
+		JMenuItem runSinglePoC = new JMenuItem(new AbstractAction("Run This PoC") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				String path = entry.getPocFileFullPath();
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String Command = RunNucleiAction.genCommand(targets, path);
+				
+				RunNucleiAction.run(Command);
+			}
+		});
+		
+		/**
+		 * 
+		 * nuclei -u 127.0.0.1 -tags cisco
+		 */
+		JMenuItem genCmdWithTags = new JMenuItem(new AbstractAction("Generate Command With Tags") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				String tags = entry.getTags();
+				tags = getTags(tags);
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String Command = RunNucleiAction.genTagsCommand(targets, tags);
+				Commons.writeToClipboard(Command);
+			}
+			
+			public String getTags(String tags) {
+				String resulttags = JOptionPane.showInputDialog("tags to use", tags).trim();
+				return resulttags;
+			}
+		});
+		
+		/**
+		 * 
+		 * nuclei -u 127.0.0.1 -tags cisco
+		 */
+		JMenuItem runMultipluePoC = new JMenuItem(new AbstractAction("Run PoCs With Tags") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				String tags = entry.getTags();
+				tags = getTags(tags);
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String Command = RunNucleiAction.genTagsCommand(targets, tags);
+				
+				RunNucleiAction.run(Command);
+			}
+			
+			public String getTags(String tags) {
+				String resulttags = JOptionPane.showInputDialog("tags to use", tags).trim();
+				return resulttags;
 			}
 		});
 
@@ -258,21 +240,20 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-		
+
 
 		this.add(itemNumber);
 		this.addSeparator();
 
-		this.add(editPoCItem);//edit
+		this.add(editPoCItem);//file operate
 		this.add(showInExplorerItem);
-		this.add(renamePoCItem);
+		this.add(copyFilePathItem);
 
 		this.addSeparator();//run check
-		this.add(checkURLItem);
-
-		this.addSeparator();// copy
-		this.add(copyFilePathItem);
-		this.add(copyVulnUrlItem);
+		this.add(genSinglePoCCmd);
+		this.add(genCmdWithTags);
+		this.add(runSinglePoC);
+		this.add(runMultipluePoC);
 
 		this.addSeparator();// search
 		this.add(googleSearchItem);
