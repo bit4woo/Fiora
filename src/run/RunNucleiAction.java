@@ -29,7 +29,7 @@ public class RunNucleiAction{
 				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				para = "-proxy http://127.0.0.1";
+				para = para + "-proxy http://127.0.0.1";
 			}
 
 			String command = TerminalExec.genCmd(null,"nuclei",para);
@@ -55,7 +55,7 @@ public class RunNucleiAction{
 				para = "-tags "+tags.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				para = "-proxy http://127.0.0.1";
+				para = para + "-proxy http://127.0.0.1";
 			}
 			
 
