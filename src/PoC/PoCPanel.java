@@ -282,10 +282,11 @@ public class PoCPanel extends JPanel {
 		});
 		buttonPanel.add(buttonCreate);
 
-		textFieldSearch = new SearchTextField().Create("");
-		buttonPanel.add(textFieldSearch);
-
 		JButton buttonSearch = new JButton("Search");
+		
+		textFieldSearch = new SearchTextField("",buttonSearch);
+		buttonPanel.add(textFieldSearch);
+		
 		buttonSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String keyword = textFieldSearch.getText().trim();
