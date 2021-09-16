@@ -94,20 +94,22 @@ public class GlobalConfig {
 	}
 	
 	public String fetchHttpProxy() {
-		if (!proxy.toLowerCase().startsWith("http://") && !proxy.toLowerCase().startsWith("https://")) {
-			proxy = "http://"+proxy;
+		String result = proxy;
+		if (!result.toLowerCase().startsWith("http://") && !result.toLowerCase().startsWith("https://")) {
+			result = "http://"+result;
 		}
-		return proxy;
+		return result;
 	}
 	
 	public String fetchSocketProxy() {
-		if (proxy.toLowerCase().startsWith("http://")) {
-			proxy = proxy.replaceFirst("http://", "");
+		String result = proxy;
+		if (result.toLowerCase().startsWith("http://")) {
+			result = result.replaceFirst("http://", "");
 		}
-		if (proxy.toLowerCase().startsWith("https://")) {
-			proxy = proxy.replaceFirst("https://", "");
+		if (result.toLowerCase().startsWith("https://")) {
+			result = result.replaceFirst("https://", "");
 		}
-		return proxy;
+		return result;
 	}
 
 }
