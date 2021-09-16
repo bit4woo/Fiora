@@ -2,12 +2,10 @@ package run;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import GUI.MainGUI;
 import PoC.PoCPanel;
 
 public class RunNucleiAction{
@@ -29,7 +27,7 @@ public class RunNucleiAction{
 				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				para = para + "-proxy http://127.0.0.1";
+				para = para + " -proxy http://127.0.0.1";
 			}
 
 			String command = TerminalExec.genCmd(null,"nuclei",para);
@@ -55,7 +53,7 @@ public class RunNucleiAction{
 				para = "-tags "+tags.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				para = para + "-proxy http://127.0.0.1";
+				para = para + " -proxy http://127.0.0.1";
 			}
 			
 

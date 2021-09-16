@@ -109,7 +109,7 @@ public class LineEntryMenu extends JPopupMenu {
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genCommand(targets, path);
 				
-				Commons.writeToClipboard(Command);
+				Commons.writeToClipboard(Command.trim());
 			}
 		});
 
@@ -140,7 +140,7 @@ public class LineEntryMenu extends JPopupMenu {
 				tags = getTags(tags);
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genTagsCommand(targets, tags);
-				Commons.writeToClipboard(Command);
+				Commons.writeToClipboard(Command.trim());
 			}
 			
 			public String getTags(String tags) {
