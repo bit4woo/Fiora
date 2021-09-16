@@ -230,29 +230,11 @@ public class PoCPanel extends JPanel {
 				buttonSearch.doClick();
 			}
 		});
-
-
-		rdbtnUseRobotInput = new JRadioButton("RobotInput");
-		rdbtnUseRobotInput.setSelected(true);
-		buttonPanel.add(rdbtnUseRobotInput);
 		
-		JLabel lblHelp = new JLabel("?");
-		lblHelp.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				try {
-					Commons.browserOpen("https://nuclei.projectdiscovery.io/nuclei/get-started/#running-nuclei", null);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		buttonPanel.add(lblHelp);
-		
-		JLabel lblProxy = new JLabel("Proxy");
-		lblHelp.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		JButton buttonProxy = new JButton("Proxy");
+		buttonPanel.add(buttonProxy);
+		buttonProxy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
 					String originProxy = BurpExtender.getGlobalConfig().getProxy();
 					String proxy = JOptionPane.showInputDialog("Proxy To Use", originProxy);
@@ -264,7 +246,22 @@ public class PoCPanel extends JPanel {
 				}
 			}
 		});
-		buttonPanel.add(lblProxy);
+		
+		JButton buttonHelp = new JButton("Help");
+		buttonPanel.add(buttonHelp);
+		buttonHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Commons.browserOpen("https://nuclei.projectdiscovery.io/nuclei/get-started/#running-nuclei", null);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
+		rdbtnUseRobotInput = new JRadioButton("RobotInput");
+		rdbtnUseRobotInput.setSelected(true);
+		buttonPanel.add(rdbtnUseRobotInput);
 
 		lblStatus = new JLabel("Status");
 		buttonPanel.add(lblStatus);
