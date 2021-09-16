@@ -94,7 +94,7 @@ public class GlobalConfig {
 	}
 	
 	public String fetchHttpProxy() {
-		if (!proxy.toLowerCase().startsWith("http://")||!proxy.toLowerCase().startsWith("https://")) {
+		if (!proxy.toLowerCase().startsWith("http://") && !proxy.toLowerCase().startsWith("https://")) {
 			proxy = "http://"+proxy;
 		}
 		return proxy;
