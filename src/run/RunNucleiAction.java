@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import PoC.PoCPanel;
+import burp.BurpExtender;
 
 public class RunNucleiAction{
 
@@ -27,7 +28,8 @@ public class RunNucleiAction{
 				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				para = para + " -proxy http://127.0.0.1";
+				String proxy = BurpExtender.getGlobalConfig().fetchHttpProxy();
+				para = para + " -proxy "+ proxy;
 			}
 
 			String command = TerminalExec.genCmd(null,"nuclei",para);

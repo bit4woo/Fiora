@@ -16,6 +16,7 @@ public class GlobalConfig {
 			System.getProperty("user.home")+File.separator+".Fiora";
 	String targets = "";
 	History searchHistory;
+	String proxy = "http://127.0.0.1";
 
 	public String getTargets() {
 		return targets;
@@ -83,4 +84,30 @@ public class GlobalConfig {
 	public  static GlobalConfig FromJson(String instanceString) {
 		return new Gson().fromJson(instanceString, GlobalConfig.class);
 	}
+
+	public String getProxy() {
+		return proxy;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
+	
+	public String fetchHttpProxy() {
+		if (!proxy.toLowerCase().startsWith("http://")||!proxy.toLowerCase().startsWith("https://")) {
+			proxy = "http://"+proxy;
+		}
+		return proxy;
+	}
+	
+	public String fetchSocketProxy() {
+		if (proxy.toLowerCase().startsWith("http://")) {
+			proxy = proxy.replaceFirst("http://", "");
+		}
+		if (proxy.toLowerCase().startsWith("https://")) {
+			proxy = proxy.replaceFirst("https://", "");
+		}
+		return proxy;
+	}
+
 }

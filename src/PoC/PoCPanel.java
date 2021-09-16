@@ -29,6 +29,8 @@ import PoCParser.NucleiParser;
 import PoCParser.PoctParser;
 import burp.BurpExtender;
 import burp.Commons;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PoCPanel extends JPanel {
 
@@ -137,54 +139,6 @@ public class PoCPanel extends JPanel {
 		return lineEntries;
 	}
 
-	public boolean FindPoCTRootByEnv() {
-		String pathvalue = System.getenv().get("PATH");
-		//在mac中，这个方法只能获取到/etc/paths中的内容，所以需要将路径写入这个文件。
-		String[] items;
-		if (Commons.isMac()){
-			items = pathvalue.split(":");
-		}else{
-			items = pathvalue.split(";");
-		}
-		for (String item:items) {
-			File tmpPath = new File(item);
-			if (tmpPath.isDirectory()) {
-				Collection<File> files = FileUtils.listFiles(tmpPath, FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
-				for (File file:files) {
-					String path = file.toString();
-					if (path.contains("POC-T"+File.separator+"script") || path.endsWith("POC-T.py")) {
-						MainGUI.poctRootPath = item;
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	@Deprecated
-	public void FindPoCTRoot() {
-		SwingWorker<Map, Map> worker = new SwingWorker<Map, Map>() {
-
-			@Override
-			protected Map doInBackground() throws Exception {
-				for (File driver:File.listRoots()) {
-					Collection<File> files = FileUtils.listFiles(driver, FileFilterUtils.suffixFileFilter("py"), DirectoryFileFilter.INSTANCE);
-					for (File file:files) {
-						String path = file.toString();
-						String keyword = "POC-T"+File.separator+"script";
-						if (path.contains("POC-T"+File.separator+"script")) {
-							String poctRootPath = path.substring(0,path.indexOf(keyword)+keyword.length()+1);
-							MainGUI.poctRootPath = poctRootPath;
-							return null;
-						}
-					}
-				}
-				return null;
-			}
-		};
-	}
-
 
 	public boolean LoadData(String dir){
 		try {//这其中的异常会导致burp退出
@@ -209,35 +163,6 @@ public class PoCPanel extends JPanel {
 	public JPanel createButtonPanel() {
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-		
-		JButton buttonFind = new JButton("Find PoC-T");//通过path环境变量获取，磁盘查找太慢了
-		buttonFind.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (!FindPoCTRootByEnv()){
-					JOptionPane.showMessageDialog(null,"Not found PoC-T in Environment,you should add it to path");
-					FindPoCTRoot();
-				};
-				if (null!=MainGUI.poctRootPath){
-					System.out.println("PoC-T Founded : "+MainGUI.poctRootPath);
-				}
-			}
-		});
-		//buttonPanel.add(buttonFind);
-
-		JButton buttonOpenDir = new JButton("Open Folder");
-		buttonPanel.add(buttonOpenDir);
-		buttonOpenDir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
-					File file = new File(MainGUI.poctRootPath);
-					String path = file.getPath()+File.separator+"script";
-					Commons.OpenFolder(path);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
 
 		JButton buttonCreate = new JButton("Create PoC");
 		buttonCreate.addActionListener(new ActionListener() {
@@ -306,29 +231,40 @@ public class PoCPanel extends JPanel {
 			}
 		});
 
-/*		JButton btnRun = new JButton("Run");
-		buttonPanel.add(btnRun);
-		btnRun.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String pocFullPath = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocFileFullPath();
-				RunPoCAction.run(pocFullPath);
-			}
-		});
-
-		JButton buttonRun = new JButton("RunWithPoC-T");
-		buttonPanel.add(buttonRun);
-		buttonRun.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				String poc = PoCPanel.getTitleTableModel().getCurrentlyDisplayedItem().getPocfile();
-				RunPoCAction.runWithPoCT(targets, poc);
-			}
-		});*/
-
 
 		rdbtnUseRobotInput = new JRadioButton("RobotInput");
 		rdbtnUseRobotInput.setSelected(true);
 		buttonPanel.add(rdbtnUseRobotInput);
+		
+		JLabel lblHelp = new JLabel("?");
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Commons.browserOpen("https://nuclei.projectdiscovery.io/nuclei/get-started/#running-nuclei", null);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		buttonPanel.add(lblHelp);
+		
+		JLabel lblProxy = new JLabel("Proxy");
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					String originProxy = BurpExtender.getGlobalConfig().getProxy();
+					String proxy = JOptionPane.showInputDialog("Proxy To Use", originProxy);
+					if (proxy!= null && proxy.contains(":")) {
+						BurpExtender.getGlobalConfig().setProxy(proxy.trim());
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		buttonPanel.add(lblProxy);
 
 		lblStatus = new JLabel("Status");
 		buttonPanel.add(lblStatus);

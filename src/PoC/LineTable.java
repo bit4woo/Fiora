@@ -133,7 +133,7 @@ public class LineTable extends JTable
 		splitPane.setLeftComponent(scrollPaneRequests);
 
 		JSplitPane RequestDetailPanel = new JSplitPane();//request and response
-		RequestDetailPanel.setResizeWeight(0.2);
+		RequestDetailPanel.setResizeWeight(0.4);
 		splitPane.setRightComponent(RequestDetailPanel);
 
 		JTabbedPane RequestPanel = new JTabbedPane();
