@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
@@ -29,8 +27,6 @@ import PoCParser.NucleiParser;
 import PoCParser.PoctParser;
 import burp.BurpExtender;
 import burp.Commons;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class PoCPanel extends JPanel {
 
@@ -260,7 +256,12 @@ public class PoCPanel extends JPanel {
 		});
 
 		rdbtnUseRobotInput = new JRadioButton("RobotInput");
-		rdbtnUseRobotInput.setSelected(true);
+		if (Commons.isMac()) {
+			rdbtnUseRobotInput.setSelected(false);
+		}else {
+			rdbtnUseRobotInput.setSelected(false);
+		}
+		
 		buttonPanel.add(rdbtnUseRobotInput);
 
 		lblStatus = new JLabel("Status");
