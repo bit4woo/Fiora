@@ -214,6 +214,12 @@ public class LineEntry {
 		return field.get(this);
 	}
 	
+	public boolean isWorkflow() {
+		boolean result =  CVE.toLowerCase().contains("workflow") && (severity== null || severity.equals(""));
+		//System.out.println(result);
+		return result;
+	}
+	
 
 	public static void main(String args[]) {
 		System.out.println(fetchTableHeaderList());

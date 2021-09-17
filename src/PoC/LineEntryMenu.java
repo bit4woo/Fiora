@@ -107,9 +107,15 @@ public class LineEntryMenu extends JPopupMenu {
 				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				String Command = RunNucleiAction.genCommand(targets, path);
 				
+				String Command;
+				if (entry.isWorkflow()) {
+					Command = RunNucleiAction.genWorkflowCommand(targets, path);
+				}else {
+					Command = RunNucleiAction.genCommand(targets, path);
+				}
 				Commons.writeToClipboard(Command.trim());
+				
 			}
 		});
 
@@ -122,7 +128,12 @@ public class LineEntryMenu extends JPopupMenu {
 				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				String Command = RunNucleiAction.genCommand(targets, path);
+				String Command;
+				if (entry.isWorkflow()) {
+					Command = RunNucleiAction.genWorkflowCommand(targets, path);
+				}else {
+					Command = RunNucleiAction.genCommand(targets, path);
+				}
 				
 				RunNucleiAction.run(Command);
 			}

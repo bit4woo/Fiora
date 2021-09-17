@@ -42,6 +42,33 @@ public class RunNucleiAction{
 		}
 	}
 	
+	public static String genWorkflowCommand(List<String> targets,String poc) {
+		try{
+			String para = "";
+			if (targets.size() <=0) {
+				para = "--helps ";
+			}else if (targets.size() ==1) {
+				para = "-w "+poc.trim()+" -u "+targets.get(0);
+			}else {
+				File tmpTargets = new File("tmpTargets.txt");
+				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
+				para = "-w "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
+			}
+			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
+				String proxy = BurpExtender.getGlobalConfig().fetchHttpProxy();
+				para = para + " -proxy "+ proxy;
+			}
+
+			String command = TerminalExec.genCmd(null,"nuclei",para);
+			return command;
+		}
+		catch (Exception e1)
+		{
+			e1.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static String genTagsCommand(List<String> targets,String tags) {
 		try{
 			String para = "";
