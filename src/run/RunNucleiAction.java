@@ -82,7 +82,8 @@ public class RunNucleiAction{
 				para = "-tags "+tags.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				para = para + " -proxy http://127.0.0.1";
+				String proxy = BurpExtender.getGlobalConfig().fetchHttpProxy();
+				para = para + " -proxy "+ proxy;
 			}
 			
 
