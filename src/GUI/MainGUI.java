@@ -50,8 +50,8 @@ public class MainGUI extends JFrame {
 		setContentPane(tabbedWrapper);
 		pocPanel = new PoCPanel();
 		tabbedWrapper.addTab("PoC", null, pocPanel, null);
-		optionsPanel = new OptionsPanel();
-		tabbedWrapper.addTab("Options", null, optionsPanel, null);
+		//optionsPanel = new OptionsPanel();
+		//tabbedWrapper.addTab("Options", null, optionsPanel, null);
 	}
 
 	public MainGUI(String poctRootPath){

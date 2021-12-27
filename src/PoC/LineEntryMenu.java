@@ -67,9 +67,12 @@ public class LineEntryMenu extends JPopupMenu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
-					File file = new File(MainGUI.poctRootPath);
-					String path = file+File.separator+"script";
-					Commons.OpenFolder(path);
+					if (rows != null && rows.length >=0){
+						LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+						String path = entry.getPocFileFullPath();
+						String dir = new File(path).getParent();
+						Commons.OpenFolder(dir);
+					}
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
