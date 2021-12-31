@@ -34,13 +34,13 @@ public class LineEntry {
 	public static LinkedHashMap<String,Integer> fetchTableHeaderAndWidth(){
 		LinkedHashMap<String,Integer> preferredWidths = new LinkedHashMap<String,Integer>();
 		preferredWidths.put("#",5);
-		preferredWidths.put("pocfile",30);
-		preferredWidths.put("CVE","CVE-2019-1234567".length());
+		preferredWidths.put("pocfile",40);
+		preferredWidths.put("CVE","CVE-2019-1234567".length()*2);
 		preferredWidths.put("severity",10);
-		preferredWidths.put("tags",10);
+		preferredWidths.put("tags",30);
 		preferredWidths.put("VulnDescription",30);
-		preferredWidths.put("Reference",30);
-		preferredWidths.put("Author",10);
+		preferredWidths.put("Reference",60);
+		preferredWidths.put("Author",30);
 		return preferredWidths;
 	}
 
