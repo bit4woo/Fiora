@@ -58,9 +58,34 @@ java -jar Fiora-202100220-jar-with-dependencies.jar
 
 ## 使用方法
 
-```
-nuclei -t C:\Users\P52\nuclei-templates\cnvd\CNVD-2020-56167.yaml -u http://example.com -proxy http://127.0.0.1
+以grafana的PoC为例。
 
-nuclei -t C:\Users\P52\nuclei-templates\cnvd\CNVD-2020-56167.yaml -u http://example.com -proxy http://127.0.0.1
+### 搜索PoC
+
+程序会自动扫描nuclei-templates目录下的所有PoC文件，并加载进程序中，可以通过关键词搜索来找到想要的PoC。
+
+![image-20220101194244053](README.assets/image-20220101194244053.png)
+
+### 生成PoC命令
+
+选中想要的PoC，右键选择“generate Command Of This PoC”即可。命令会写入剪切板，直接粘贴运行即可。优点是可以对命令行进行再次编辑，但是需要自行粘贴后运行。
+
+![image-20220101195315472](README.assets/image-20220101195315472.png)
+
 ```
+#生产的单个PoC 
+nuclei -t C:\Users\P52\nuclei-templates\vulnerabilities\grafana\grafana-file-read.yaml -u http://example.com -proxy http://127.0.0.1
+
+#生产workflow PoC
+nuclei -w C:\Users\P52\nuclei-templates\workflows\grafana-workflow.yaml -u http://example.com -proxy http://127.0.0.1
+
+
+nuclei -tags grafana -u http://example.com -proxy http://127.0.0.1
+```
+
+### 直接执行PoC
+
+和生成PoC命令类似，但是它会直接执行生成的命令，不需要粘贴。优点是更便捷，但是无法编辑命令行。
+
+![image-20220101200920749](README.assets/image-20220101200920749.png)
 
