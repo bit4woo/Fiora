@@ -2,7 +2,7 @@
 
 ## Fiora
 
-项目简介：LoL中的英雄无双剑姬的名字，她善于发现对手防守弱点，实现精准打击。该项目为PoC框架[nuclei](https://github.com/projectdiscovery/nuclei)提供图形界面，实现快速搜索、一键运行等功能，提升[nuclei](https://github.com/projectdiscovery/nuclei)的使用体验。
+项目简介：Fiora是LoL中的无双剑姬的名字，她善于发现对手防守弱点，实现精准打击。该项目为PoC框架[nuclei](https://github.com/projectdiscovery/nuclei)提供图形界面，实现快速搜索、一键运行等功能，提升[nuclei](https://github.com/projectdiscovery/nuclei)的使用体验。
 
 项目地址：https://github.com/bit4woo/Fiora
 

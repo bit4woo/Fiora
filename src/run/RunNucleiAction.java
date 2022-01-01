@@ -29,7 +29,9 @@ public class RunNucleiAction{
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
 				String proxy = MainGUI.getGlobalConfig().fetchHttpProxy();
-				para = para + " -proxy "+ proxy;
+				if (proxy.length() >= "http://1.0.0.1:80".length()) {
+					para = para + " -proxy "+ proxy;
+				}
 			}
 
 			String command = TerminalExec.genCmd(null,"nuclei",para);

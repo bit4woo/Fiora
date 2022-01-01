@@ -174,7 +174,7 @@ public class PoCPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					File srcFile = new File(MainGUI.poctRootPath+File.separator+
-							"cve2"+File.separator+"2021"+File.separator+"CVE-2021-1497.yaml");
+							"cves"+File.separator+"2021"+File.separator+"CVE-2021-1497.yaml");
 					File destFile = getInputFile();
 					if (null !=destFile) {
 						FileUtils.copyFile(srcFile, destFile);
