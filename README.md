@@ -8,7 +8,7 @@
 
 项目作者：[bit4woo](https://github.com/bit4woo)
 
-视频教程：
+视频教程：https://www.bilibili.com/video/bv1Ha411z7T1
 
 ## 安装运行
 
