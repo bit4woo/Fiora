@@ -26,7 +26,6 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 	private static String Author = "by bit4woo";
 	private static String github = "https://github.com/bit4woo/Fiora";
 	private static MainGUI gui;
-	private static GlobalConfig globalConfig;
 	private static final Logger log=LogManager.getLogger(BurpExtender.class);
 
 	public static PrintWriter getStdout() {
@@ -60,15 +59,6 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 		return gui;
 	}
 
-	
-	public static GlobalConfig getGlobalConfig() {
-		return globalConfig;
-	}
-
-	public static void setGlobalConfig(GlobalConfig globalConfig) {
-		BurpExtender.globalConfig = globalConfig;
-	}
-
 	public static String getExtenderName() {
 		return ExtenderName;
 	}
@@ -96,9 +86,9 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 		callbacks.registerContextMenuFactory(this);
 		callbacks.registerExtensionStateListener(this);
 
-		globalConfig = GlobalConfig.loadFromDisk();
+		
 		gui = new MainGUI();
-		GlobalConfig.showConfigToUI(globalConfig);
+		
 		SwingUtilities.invokeLater(new Runnable()
 		{//create GUI
 			public void run()
@@ -126,6 +116,6 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 
 	@Override
 	public void extensionUnloaded() {
-		globalConfig.saveToDisk();
+		MainGUI.getGlobalConfig().saveToDisk();
 	}
 }

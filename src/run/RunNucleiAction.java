@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import GUI.MainGUI;
 import PoC.PoCPanel;
-import burp.BurpExtender;
 
 public class RunNucleiAction{
 
@@ -28,7 +28,7 @@ public class RunNucleiAction{
 				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				String proxy = BurpExtender.getGlobalConfig().fetchHttpProxy();
+				String proxy = MainGUI.getGlobalConfig().fetchHttpProxy();
 				para = para + " -proxy "+ proxy;
 			}
 
@@ -55,7 +55,7 @@ public class RunNucleiAction{
 				para = "-w "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				String proxy = BurpExtender.getGlobalConfig().fetchHttpProxy();
+				String proxy = MainGUI.getGlobalConfig().fetchHttpProxy();
 				para = para + " -proxy "+ proxy;
 			}
 
@@ -82,7 +82,7 @@ public class RunNucleiAction{
 				para = "-tags "+tags.trim()+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
-				String proxy = BurpExtender.getGlobalConfig().fetchHttpProxy();
+				String proxy = MainGUI.getGlobalConfig().fetchHttpProxy();
 				para = para + " -proxy "+ proxy;
 			}
 			

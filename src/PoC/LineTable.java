@@ -23,12 +23,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
+import GUI.MainGUI;
 import GUI.TextAreaMouseListener;
 import GUI.textAreaDocumentListener;
 import PoC.search.History;
 import PoC.search.LineSearch;
 import burp.BurpExtender;
 import burp.Commons;
+import burp.GlobalConfig;
 
 public class LineTable extends JTable
 {
@@ -145,7 +147,11 @@ public class LineTable extends JTable
 		textAreaTarget = new JTextArea();
 		scrollPane.setViewportView(textAreaTarget);
 		textAreaTarget.addMouseListener(new TextAreaMouseListener(textAreaTarget));
-		textAreaTarget.getDocument().addDocumentListener(new textAreaDocumentListener(textAreaTarget,BurpExtender.getGlobalConfig()));
+		GlobalConfig config = MainGUI.getGlobalConfig();
+		if (config != null) {
+			textAreaTarget.getDocument().addDocumentListener(new textAreaDocumentListener(textAreaTarget,config));
+		}
+		
 
 		JTabbedPane ResponsePanel = new JTabbedPane();
 		RequestDetailPanel.setRightComponent(ResponsePanel);

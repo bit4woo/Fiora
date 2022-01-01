@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bit4woo.burp</groupId>
 	<artifactId>Fiora</artifactId>
-	<version>20210917</version>
+	<version>v0.1</version>
 
 	<repositories>
 		<repository>

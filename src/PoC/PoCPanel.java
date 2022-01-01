@@ -155,6 +155,15 @@ public class PoCPanel extends JPanel {
 			return false;
 		}
 	}
+	
+	public static void updateTemplate() {
+		try {
+			Process process = Runtime.getRuntime().exec("nuclei -ut");
+			process.waitFor();//等待执行完成
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public JPanel createButtonPanel() {
 		buttonPanel = new JPanel();
@@ -221,6 +230,7 @@ public class PoCPanel extends JPanel {
 		buttonPanel.add(buttonFresh);
 		buttonFresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				updateTemplate();
 				LoadData(MainGUI.poctRootPath);
 				lblStatus.setText(titleTableModel.getStatusSummary());
 				buttonSearch.doClick();
@@ -232,10 +242,10 @@ public class PoCPanel extends JPanel {
 		buttonProxy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					String originProxy = BurpExtender.getGlobalConfig().getProxy();
-					String proxy = JOptionPane.showInputDialog("Proxy To Use", originProxy);
-					if (proxy!= null && proxy.contains(":")) {
-						BurpExtender.getGlobalConfig().setProxy(proxy.trim());
+					String originProxy = MainGUI.getGlobalConfig().getProxy();
+					String proxy = JOptionPane.showInputDialog("Proxy To Use: eg. http://127.0.0.1:8080", originProxy);
+					if (proxy!= null) {
+						MainGUI.getGlobalConfig().setProxy(proxy.trim());
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();

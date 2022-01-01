@@ -9,6 +9,7 @@ import javax.swing.JTabbedPane;
 
 import PoC.PoCPanel;
 import burp.BurpExtender;
+import burp.GlobalConfig;
 
 
 public class MainGUI extends JFrame {
@@ -19,6 +20,8 @@ public class MainGUI extends JFrame {
 	protected PrintWriter stderr;
 	public static OptionsPanel optionsPanel;
 	public static String poctRootPath = System.getProperty("user.home")+File.separator+"nuclei-templates";
+	private static GlobalConfig globalConfig;
+	
 
 	public static PoCPanel getPoCPanel() {
 		return pocPanel;
@@ -30,6 +33,14 @@ public class MainGUI extends JFrame {
 
 	public static void setCurrentDBFile(File currentDBFile) {
 		MainGUI.currentDBFile = currentDBFile;
+	}
+	
+	public static GlobalConfig getGlobalConfig() {
+		return globalConfig;
+	}
+
+	public static void setGlobalConfig(GlobalConfig globalConfig) {
+		MainGUI.globalConfig = globalConfig;
 	}
 
 	/**
@@ -43,7 +54,7 @@ public class MainGUI extends JFrame {
 			stdout = new PrintWriter(System.out, true);
 			stderr = new PrintWriter(System.out, true);
 		}
-
+		
 		JTabbedPane tabbedWrapper = new JTabbedPane();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1174, 497);
@@ -52,6 +63,9 @@ public class MainGUI extends JFrame {
 		tabbedWrapper.addTab("PoC", null, pocPanel, null);
 		//optionsPanel = new OptionsPanel();
 		//tabbedWrapper.addTab("Options", null, optionsPanel, null);
+		
+		globalConfig = GlobalConfig.loadFromDisk();
+		GlobalConfig.showConfigToUI(globalConfig);
 	}
 
 	public MainGUI(String poctRootPath){
