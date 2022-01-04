@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -172,16 +173,30 @@ public class PoCPanel extends JPanel {
 		JButton buttonCreate = new JButton("Create PoC");
 		buttonCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				File srcFile = new File(MainGUI.poctRootPath+File.separator+
+						"cves"+File.separator+"2000"+File.separator+"CVE-2000-0114.yaml");
+				File destFile = getInputFile();
 				try {
-					File srcFile = new File(MainGUI.poctRootPath+File.separator+
-							"cves"+File.separator+"2021"+File.separator+"CVE-2021-1497.yaml");
-					File destFile = getInputFile();
-					if (null !=destFile) {
+					if (null != destFile) {
 						FileUtils.copyFile(srcFile, destFile);
 						PoCPanel.buttonFresh.doClick();
 						Commons.editWithVSCode(destFile.getAbsolutePath());
 					}
-				} catch (IOException e1) {
+				}catch (FileNotFoundException e1) {
+					//换个文件再试试
+					srcFile = new File(MainGUI.poctRootPath+File.separator+
+							"cnvd"+File.separator+"CNVD-2019-01348.yaml");
+					try {
+						if (null != destFile) {
+							FileUtils.copyFile(srcFile, destFile);
+							PoCPanel.buttonFresh.doClick();
+							Commons.editWithVSCode(destFile.getAbsolutePath());
+						}
+					} catch (IOException e2) {
+						e2.printStackTrace();
+					}
+				}
+				catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
