@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -195,8 +197,9 @@ public class LineEntryMenu extends JPopupMenu {
 				for (int row:rows) {
 					//String searchContent = (String)lineTable.getModel().getValueAt(row, columnIndex);
 					String searchContent = LineEntryMenu.getValue(row, columnIndex);
-					String url= "https://www.google.com/search?q="+searchContent;
 					try {
+						searchContent = URLEncoder.encode(searchContent, StandardCharsets.UTF_8.toString());
+						String url= "https://www.google.com/search?q="+searchContent;
 						Commons.browserOpen(url, null);
 					} catch (Exception e) {
 						e.printStackTrace(stderr);
@@ -214,8 +217,9 @@ public class LineEntryMenu extends JPopupMenu {
 				}
 				for (int row:rows) {
 					String searchContent = LineEntryMenu.getValue(row, columnIndex);
-					String url= "https://github.com/search?q=%22"+searchContent+"%22&type=Code";
 					try {
+						searchContent = URLEncoder.encode(searchContent, StandardCharsets.UTF_8.toString());
+						String url= "https://github.com/search?q=%22"+searchContent+"%22&type=Code";
 						Commons.browserOpen(url, null);
 					} catch (Exception e) {
 						e.printStackTrace(stderr);
@@ -234,8 +238,9 @@ public class LineEntryMenu extends JPopupMenu {
 				}
 				for (int row:rows) {
 					String searchContent = LineEntryMenu.getValue(row, columnIndex);
-					String url= "https://fofa.so/result?q=%22"+searchContent+"%22";
 					try {
+						searchContent = URLEncoder.encode(searchContent, StandardCharsets.UTF_8.toString());
+						String url= "https://fofa.so/result?q=%22"+searchContent+"%22";
 						Commons.browserOpen(url, null);
 					} catch (Exception e) {
 						e.printStackTrace(stderr);
