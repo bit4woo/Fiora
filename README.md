@@ -25,8 +25,8 @@
 4、如果你想使用最新的功能，可以使用如下方法自行打包。
 
 ```
-git clone https://github.com/bit4woo/knife
-cd knife
+git clone https://github.com/bit4woo/Fiora
+cd Fiora
 mvn package
 ```
 
