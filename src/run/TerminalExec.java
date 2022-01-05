@@ -70,7 +70,7 @@ public class TerminalExec {
 				cmdContent = String.format("osascript -e 'tell app \"Terminal\" to do script \"%s\"'",cmdContent);
 			}
 			FileUtils.writeByteArrayToFile(batFile, cmdContent.getBytes());
-			return batFile.getAbsolutePath();
+			return "\""+batFile.getAbsolutePath()+"\"";
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
