@@ -18,14 +18,18 @@ public class RunNucleiAction{
 	public static String genCommand(List<String> targets,String poc) {
 		try{
 			String para = "";
+			poc = poc.trim();
+			if (poc.contains(" ")) {
+				poc = "\""+poc+"\"";
+			}
 			if (targets.size() <=0) {
 				para = "--helps ";
 			}else if (targets.size() ==1) {
-				para = "-t "+poc.trim()+" -u "+targets.get(0);
+				para = "-t "+poc+" -u "+targets.get(0);
 			}else {
 				File tmpTargets = new File("tmpTargets.txt");
 				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
-				para = "-t "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
+				para = "-t "+poc+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
 				String proxy = MainGUI.getGlobalConfig().fetchHttpProxy();
@@ -47,14 +51,18 @@ public class RunNucleiAction{
 	public static String genWorkflowCommand(List<String> targets,String poc) {
 		try{
 			String para = "";
+			poc = poc.trim();
+			if (poc.contains(" ")) {
+				poc = "\""+poc+"\"";
+			}
 			if (targets.size() <=0) {
 				para = "--helps ";
 			}else if (targets.size() ==1) {
-				para = "-w "+poc.trim()+" -u "+targets.get(0);
+				para = "-w "+poc+" -u "+targets.get(0);
 			}else {
 				File tmpTargets = new File("tmpTargets.txt");
 				FileUtils.writeByteArrayToFile(tmpTargets, String.join(System.lineSeparator(),targets).getBytes());
-				para = "-w "+poc.trim()+" -l "+tmpTargets.getAbsolutePath();
+				para = "-w "+poc+" -l "+tmpTargets.getAbsolutePath();
 			}
 			if (targets.toString().toLowerCase().contains("http://") || targets.toString().toLowerCase().contains("https://")) {
 				String proxy = MainGUI.getGlobalConfig().fetchHttpProxy();
