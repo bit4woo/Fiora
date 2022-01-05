@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Base64;
 import java.util.Collection;
 
 import javax.swing.JButton;
@@ -184,11 +185,10 @@ public class PoCPanel extends JPanel {
 					}
 				}catch (FileNotFoundException e1) {
 					//换个文件再试试
-					srcFile = new File(MainGUI.poctRootPath+File.separator+
-							"cnvd"+File.separator+"CNVD-2019-01348.yaml");
+					String content = "aWQ6IENWRS0yMDAwLTAxMTQKCmluZm86CiAgbmFtZTogTWljcm9zb2Z0IEZyb250UGFnZSBFeHRlbnNpb25zIENoZWNrIChzaHRtbC5kbGwpCiAgYXV0aG9yOiByM25haXNzYW5jZQogIHNldmVyaXR5OiBsb3cKICBkZXNjcmlwdGlvbjogRnJvbnRwYWdlIFNlcnZlciBFeHRlbnNpb25zIGFsbG93cyByZW1vdGUgYXR0YWNrZXJzIHRvIGRldGVybWluZSB0aGUgbmFtZSBvZiB0aGUgYW5vbnltb3VzIGFjY291bnQgdmlhIGFuIFJQQyBQT1NUIHJlcXVlc3QgdG8gc2h0bWwuZGxsIGluIHRoZSAvX3Z0aV9iaW4vIHZpcnR1YWwgZGlyZWN0b3J5LgogIHJlZmVyZW5jZToKICAgIC0gaHR0cHM6Ly9udmQubmlzdC5nb3YvdnVsbi9kZXRhaWwvQ1ZFLTIwMDAtMDExNAogICAgLSBodHRwczovL3d3dy5leHBsb2l0LWRiLmNvbS9leHBsb2l0cy8xOTg5NwogIHRhZ3M6IGN2ZSxjdmUyMDAwLGZyb250cGFnZSxtaWNyb3NvZnQKCnJlcXVlc3RzOgogIC0gbWV0aG9kOiBHRVQKICAgIHBhdGg6CiAgICAgIC0gJ3t7QmFzZVVSTH19L192dGlfaW5mLmh0bWwnCgogICAgbWF0Y2hlcnMtY29uZGl0aW9uOiBhbmQKICAgIG1hdGNoZXJzOgogICAgICAtIHR5cGU6IHN0YXR1cwogICAgICAgIHN0YXR1czoKICAgICAgICAgIC0gMjAwCgogICAgICAtIHR5cGU6IHdvcmQKICAgICAgICBwYXJ0OiBib2R5CiAgICAgICAgd29yZHM6CiAgICAgICAgICAtICJfdnRpX2Jpbi9zaHRtbC5kbGwi";
 					try {
 						if (null != destFile) {
-							FileUtils.copyFile(srcFile, destFile);
+							FileUtils.writeByteArrayToFile(destFile,Base64.getDecoder().decode(content));
 							PoCPanel.buttonFresh.doClick();
 							Commons.editWithVSCode(destFile.getAbsolutePath());
 						}
