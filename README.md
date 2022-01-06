@@ -22,14 +22,6 @@
 
 ![image-20220101172629795](README.assets/image-20220101172629795.png)
 
-4、如果你想使用最新的功能，可以使用如下方法自行打包。
-
-```
-git clone https://github.com/bit4woo/knife
-cd knife
-mvn package
-```
-
 
 
 ### 二、作为独立程序运行
@@ -46,7 +38,91 @@ java -jar Fiora-202100220-jar-with-dependencies.jar
 
 ![image-20220101173647192](README.assets/image-20220101173647192.png)
 
+### 三、最新源码尝鲜
 
+#### 自行打包
+
+当你遇到bug或者想使用最新的功能时，可以使用如下方法自行打包。
+
+```
+git clone https://github.com/bit4woo/knife
+cd knife
+mvn package
+```
+
+#### 关于"burp-api-common"下载失败
+
+如果没有使用过GitHub Packages，则需要创建或修改/Users/xxxxxx/.m2/setttings.xml 文件
+
+https://github.com/settings/tokens
+
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/bit4woo/*</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>github</id>
+      <username>你的GitHub用户名</username>
+      <password>你的GitHub access token 通过https://github.com/settings/tokens获取</password>
+    </server>
+  </servers>
+
+    <properties>  
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>  
+    </properties> 
+</settings>
+```
+
+`</repository>` 和`<server>` 中的内容是你需要配置的。` <repository>`中的内容你可以直接复制粘贴。
+
+```
+       <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/bit4woo/*</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+```
+
+而`<server>` 中的内容就必须用自己的了。通过https://github.com/settings/tokens获取你的GitHub access token
+
+```
+    <server>
+      <id>github</id>
+      <username>你的GitHub用户名</username>
+      <password>你的GitHub access token 通过https://github.com/settings/tokens获取</password>
+    </server>
+```
+
+完成后再进行步骤一的操作即可。
 
 ## 注意说明
 
@@ -89,3 +165,10 @@ nuclei -tags grafana -u http://example.com -proxy http://127.0.0.1
 
 ![image-20220101200920749](README.assets/image-20220101200920749.png)
 
+### 关于RobotInput
+
+RobotInput选项会影响命令执行的方式。
+
+**当启用RobotInput时**，会尝试先开启一个命令行终端，然后以模拟键盘输入的方式进行命令的执行。优点是：效果类似人为交互，会在命令行终端留下历史记录。缺点是：这个方式受程序响应速度、剪切板读写是否成功的影响，不是很稳定，某些情况会出现混乱错误。
+
+**当停用RobotInput时**，会将所有命令先写入bat文件，然后运行bat文件，来实现系统命令的执行。优缺点刚好相反：功能稳定，但是不会留下命令行历史记录。
