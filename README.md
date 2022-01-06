@@ -23,7 +23,6 @@
 ![image-20220101172629795](README.assets/image-20220101172629795.png)
 
 
-
 ### 二、作为独立程序运行
 
 该程序即可作为burp插件运行，也可以作为独立程序运行。命令行下通过java启动程序的命令：
@@ -45,8 +44,8 @@ java -jar Fiora-202100220-jar-with-dependencies.jar
 当你遇到bug或者想使用最新的功能时，可以使用如下方法自行打包。
 
 ```
-git clone https://github.com/bit4woo/knife
-cd knife
+git clone https://github.com/bit4woo/Fiora
+cd Fiora
 mvn package
 ```
 
