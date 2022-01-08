@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 
+import GUI.OptionsPanel;
 import PoC.PoCPanel;
 import PoC.search.History;
 
@@ -14,9 +15,20 @@ import PoC.search.History;
 public class GlobalConfig {
 	private static final String localdir = 
 			System.getProperty("user.home")+File.separator+".Fiora";
-	String targets = "";
-	History searchHistory;
-	String proxy = "http://127.0.0.1";
+	public static final String defaultPoCRootPath = 
+			System.getProperty("user.home")+File.separator+"nuclei-templates";
+	private String poctRootPath = defaultPoCRootPath;
+	private String targets = "";
+	private History searchHistory;
+	private String proxy = "http://127.0.0.1";
+
+	public String getPoctRootPath() {
+		return poctRootPath;
+	}
+
+	public void setPoctRootPath(String poctRootPath) {
+		this.poctRootPath = poctRootPath;
+	}
 
 	public String getTargets() {
 		return targets;
@@ -52,7 +64,7 @@ public class GlobalConfig {
 		File localFile = new File(localdir+File.separator+"config.json");
 		return loadFromDisk(localFile.toString());
 	}
-	
+
 	public static GlobalConfig loadFromDisk(String projectFile) {
 		try {
 			File localFile = new File(projectFile);
@@ -67,12 +79,13 @@ public class GlobalConfig {
 		}
 		return new GlobalConfig();
 	}
-	
+
 	public static void showConfigToUI(GlobalConfig config) {
 		PoCPanel.getTitleTable().getTextAreaTarget().setText(config.getTargets());
+		OptionsPanel.getNucleiTemplatesPath().setText(config.getPoctRootPath());
 		History.setInstance(config.getSearchHistory());
 	}
-	
+
 	public static void showConfigToUI() {
 		showConfigToUI(loadFromDisk());
 	}
@@ -92,7 +105,7 @@ public class GlobalConfig {
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
 	}
-	
+
 	public String fetchHttpProxy() {
 		String result = proxy;
 		if (result.length()<8){
@@ -103,7 +116,7 @@ public class GlobalConfig {
 		}
 		return result;
 	}
-	
+
 	public String fetchSocketProxy() {
 		String result = proxy;
 		if (result.toLowerCase().startsWith("http://")) {

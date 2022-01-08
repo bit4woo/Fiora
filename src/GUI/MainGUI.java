@@ -1,13 +1,11 @@
 package GUI;
 
 import java.awt.EventQueue;
-import java.io.File;
 import java.io.PrintWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import PoC.PoCPanel;
 import burp.BurpExtender;
@@ -17,26 +15,15 @@ import burp.GlobalConfig;
 public class MainGUI extends JFrame {
 
 	public static PoCPanel pocPanel;
-	public static File currentDBFile;
+	public static OptionsPanel optionsPanel;
 	protected PrintWriter stdout;
 	protected PrintWriter stderr;
-	public static OptionsPanel optionsPanel;
-	public static String poctRootPath = System.getProperty("user.home")+File.separator+"nuclei-templates";
 	private static GlobalConfig globalConfig;
-	
 
 	public static PoCPanel getPoCPanel() {
 		return pocPanel;
 	}
 
-	public static File getCurrentDBFile() {
-		return currentDBFile;
-	}
-
-	public static void setCurrentDBFile(File currentDBFile) {
-		MainGUI.currentDBFile = currentDBFile;
-	}
-	
 	public static GlobalConfig getGlobalConfig() {
 		return globalConfig;
 	}
@@ -56,7 +43,7 @@ public class MainGUI extends JFrame {
 			stdout = new PrintWriter(System.out, true);
 			stderr = new PrintWriter(System.out, true);
 		}
-		
+
 		try {
 			String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
 			UIManager.setLookAndFeel(lookAndFeel);
@@ -67,20 +54,17 @@ public class MainGUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1174, 497);
 		setContentPane(tabbedWrapper);
-		pocPanel = new PoCPanel();
-		tabbedWrapper.addTab("PoC", null, pocPanel, null);
-		//optionsPanel = new OptionsPanel();
-		//tabbedWrapper.addTab("Options", null, optionsPanel, null);
-		
+
 		globalConfig = GlobalConfig.loadFromDisk();
+
+		pocPanel = new PoCPanel(globalConfig.getPoctRootPath());
+		tabbedWrapper.addTab("PoC", null, pocPanel, null);
+		optionsPanel = new OptionsPanel();
+		tabbedWrapper.addTab("Options", null, optionsPanel, null);
+
 		GlobalConfig.showConfigToUI(globalConfig);
 	}
 
-	public MainGUI(String poctRootPath){
-		this();
-		MainGUI.poctRootPath = poctRootPath;
-	}
-	
 	/**
 	 * Launch the application.
 	 */

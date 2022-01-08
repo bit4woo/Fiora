@@ -8,25 +8,25 @@ import javax.swing.event.DocumentListener;
  */
 
 public class TextFieldListener implements DocumentListener {
-
+	boolean listenerIsOn = true;
 	@Override
 	public void removeUpdate(DocumentEvent e) {
-//		if (listenerIsOn) {
-//			saveToConfigFromGUI();
-//		}
+		if (listenerIsOn) {
+			OptionsPanel.saveToConfigFromGUI();
+		}
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
-//		if (listenerIsOn) {
-//		saveToConfigFromGUI();
-//	}
+		if (listenerIsOn) {
+			OptionsPanel.saveToConfigFromGUI();
+		}
 	}
 
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
-//		if (listenerIsOn) {
-//		saveToConfigFromGUI();
-//	}
+		if (listenerIsOn) {
+			OptionsPanel.saveToConfigFromGUI();
+		}
 	}
 }

@@ -29,6 +29,7 @@ import PoCParser.NucleiParser;
 import PoCParser.PoctParser;
 import burp.BurpExtender;
 import burp.Commons;
+import burp.GlobalConfig;
 
 public class PoCPanel extends JPanel {
 
@@ -71,7 +72,7 @@ public class PoCPanel extends JPanel {
 		return BackupLineEntries;
 	}
 
-	public PoCPanel() {//构造函数
+	public PoCPanel(String poctRootPath) {//构造函数
 
 		try{
 			stdout = new PrintWriter(BurpExtender.getCallbacks().getStdout(), true);
@@ -90,7 +91,7 @@ public class PoCPanel extends JPanel {
 		titleTable = new LineTable(titleTableModel);
 		this.add(titleTable.getTableAndDetailSplitPane(),BorderLayout.CENTER);
 		//LoadData(MainGUI.poctRootPath+File.separator+"script");
-		LoadData(MainGUI.poctRootPath);
+		LoadData(poctRootPath);
 	}
 
 	/**
@@ -157,13 +158,23 @@ public class PoCPanel extends JPanel {
 			return false;
 		}
 	}
-	
+
 	public static void updateTemplate() {
-		try {
-			Process process = Runtime.getRuntime().exec("nuclei -ut");
-			process.waitFor();//等待执行完成
-		} catch (Exception e) {
-			e.printStackTrace();
+		String pocRoot = MainGUI.getGlobalConfig().getPoctRootPath();
+		if (pocRoot.equals(GlobalConfig.defaultPoCRootPath)) {
+			try {
+				Process process = Runtime.getRuntime().exec("nuclei -ut");
+				process.waitFor();//等待执行完成
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else {
+			try {
+				Process process = Runtime.getRuntime().exec("nuclei -ut -ud "+pocRoot);
+				process.waitFor();//等待执行完成
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -174,7 +185,7 @@ public class PoCPanel extends JPanel {
 		JButton buttonCreate = new JButton("Create PoC");
 		buttonCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				File srcFile = new File(MainGUI.poctRootPath+File.separator+
+				File srcFile = new File(MainGUI.getGlobalConfig().getPoctRootPath()+File.separator+
 						"cves"+File.separator+"2000"+File.separator+"CVE-2000-0114.yaml");
 				File destFile = getInputFile();
 				try {
@@ -214,7 +225,7 @@ public class PoCPanel extends JPanel {
 							pocFileName = pocFileName+".yaml";
 						}
 
-						File destFile = new File(MainGUI.poctRootPath+File.separator+pocFileName);
+						File destFile = new File(MainGUI.getGlobalConfig().getPoctRootPath()+File.separator+pocFileName);
 						if (destFile.exists()) {
 							initialSelectionValue = pocFileName;
 							continue;
@@ -228,10 +239,10 @@ public class PoCPanel extends JPanel {
 		buttonPanel.add(buttonCreate);
 
 		JButton buttonSearch = new JButton("Search");
-		
+
 		textFieldSearch = new SearchTextField("",buttonSearch);
 		buttonPanel.add(textFieldSearch);
-		
+
 		buttonSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String keyword = textFieldSearch.getText().trim();
@@ -246,12 +257,12 @@ public class PoCPanel extends JPanel {
 		buttonFresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updateTemplate();
-				LoadData(MainGUI.poctRootPath);
+				LoadData(MainGUI.getGlobalConfig().getPoctRootPath());
 				lblStatus.setText(titleTableModel.getStatusSummary());
 				buttonSearch.doClick();
 			}
 		});
-		
+
 		JButton buttonProxy = new JButton("Proxy");
 		buttonPanel.add(buttonProxy);
 		buttonProxy.addActionListener(new ActionListener() {
@@ -267,7 +278,7 @@ public class PoCPanel extends JPanel {
 				}
 			}
 		});
-		
+
 		JButton buttonHelp = new JButton("Help");
 		buttonPanel.add(buttonHelp);
 		buttonHelp.addActionListener(new ActionListener() {
@@ -286,7 +297,7 @@ public class PoCPanel extends JPanel {
 		}else {
 			rdbtnUseRobotInput.setSelected(false);
 		}
-		
+
 		buttonPanel.add(rdbtnUseRobotInput);
 
 		lblStatus = new JLabel("Status");
