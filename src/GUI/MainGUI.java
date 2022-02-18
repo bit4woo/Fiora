@@ -44,12 +44,14 @@ public class MainGUI extends JFrame {
 			stderr = new PrintWriter(System.out, true);
 		}
 
+		/**这段代码会影响burp v2022.2的显示！
 		try {
 			String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
 			UIManager.setLookAndFeel(lookAndFeel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 		JTabbedPane tabbedWrapper = new JTabbedPane();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1174, 497);

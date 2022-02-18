@@ -88,6 +88,7 @@ public class BurpExtender implements IBurpExtender, ITab,IContextMenuFactory,IEx
 
 		
 		gui = new MainGUI();
+		callbacks.customizeUiComponent(gui);//使用burp的显示风格
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{//create GUI
