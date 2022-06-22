@@ -101,6 +101,39 @@ public class LineEntryMenu extends JPopupMenu {
 
 			}
 		});
+		
+		
+		/**
+		 * nuclei -u 127.0.0.1
+		 */
+		JMenuItem genAllPoCCmd = new JMenuItem(new AbstractAction("Generate Command For All PoC") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				String path = entry.getPocFileFullPath();
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				
+				String Command = RunNucleiAction.genCommandRunAll(targets);
+				Commons.writeToClipboard(Command.trim());
+				
+			}
+		});
+
+		/**
+		 * nuclei -u 127.0.0.1
+		 */
+		JMenuItem runAllPoC = new JMenuItem(new AbstractAction("Run All PoC") {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				String path = entry.getPocFileFullPath();
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String Command = RunNucleiAction.genCommandRunAll(targets);
+				
+				RunNucleiAction.run(Command);
+			}
+		});
+		
 
 		
 		/**
@@ -269,8 +302,10 @@ public class LineEntryMenu extends JPopupMenu {
 		this.add(copyFilePathItem);
 
 		this.addSeparator();//run check
+		this.add(genAllPoCCmd);
 		this.add(genSinglePoCCmd);
 		this.add(genCmdWithTags);
+		this.add(runAllPoC);
 		this.add(runSinglePoC);
 		this.add(runMultipluePoC);
 
