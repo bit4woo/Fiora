@@ -62,7 +62,7 @@ public class RunNucleiAction {
 			
 			if (targets.toString().toLowerCase().contains("http://")
 					|| targets.toString().toLowerCase().contains("https://")) {
-				para = target+" "+proxy;
+				para = target+" -as "+proxy; //-as自动进行指纹识别后扫描
 			}
 
 			String command = TerminalExec.genCmd(null, "nuclei", para);
