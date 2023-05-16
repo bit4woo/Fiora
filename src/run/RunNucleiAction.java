@@ -149,7 +149,8 @@ public class RunNucleiAction {
 			if (useRobot) {
 				ri.inputString(command);
 			} else {
-				String batFile = TerminalExec.genBatchFile(command, "Nuclei.bat");
+				String batFile = TerminalExec.genBatchFile(command, "Nuclei_cmd.bat");
+				//避免和可执行文件同名
 				TerminalExec.runBatchFile(batFile);
 			}
 		} catch (Exception e1) {
