@@ -38,7 +38,6 @@ public class LineTable extends JTable
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private LineTableModel lineTableModel;
 	private TableRowSorter<LineTableModel> rowSorter;//TableRowSorter vs. RowSorter
 
 	PrintWriter stdout;
@@ -90,7 +89,6 @@ public class LineTable extends JTable
 			stderr = new PrintWriter(System.out, true);
 		}
 
-		this.lineTableModel = lineTableModel;
 		this.setFillsViewportHeight(true);//在table的空白区域显示右键菜单
 		//https://stackoverflow.com/questions/8903040/right-click-mouselistener-on-whole-jtable-component
 		this.setModel(lineTableModel);
@@ -103,22 +101,20 @@ public class LineTable extends JTable
 		tableAndDetailSplitPane = tableAndDetailPanel();
 	}
 
+	public LineTableModel getLineTabelModel() {
+		return (LineTableModel)this.getModel();
+	}
+
 	@Override
 	public void changeSelection(int row, int col, boolean toggle, boolean extend)
 	{
 		// show the log entry for the selected row
-		LineEntry Entry = this.lineTableModel.getLineEntries().getValueAtIndex(super.convertRowIndexToModel(row));
+		LineEntry Entry = getLineTabelModel().getLineEntries().getValueAtIndex(super.convertRowIndexToModel(row));
 
-		this.lineTableModel.setCurrentlyDisplayedItem(Entry);
+		getLineTabelModel().setCurrentlyDisplayedItem(Entry);
 		String detail = Entry.getDetail();
 		textAreaPoCDetail.setText(detail);
 		super.changeSelection(row, col, toggle, extend);
-	}
-
-	@Override
-	public LineTableModel getModel(){
-		//return (LineTableModel) super.getModel();
-		return lineTableModel;
 	}
 
 
@@ -151,7 +147,7 @@ public class LineTable extends JTable
 		if (config != null) {
 			textAreaTarget.getDocument().addDocumentListener(new textAreaDocumentListener(textAreaTarget,config));
 		}
-		
+
 
 		JTabbedPane ResponsePanel = new JTabbedPane();
 		RequestDetailPanel.setRightComponent(ResponsePanel);
@@ -193,7 +189,7 @@ public class LineTable extends JTable
 
 	public void addClickSort() {//双击header头进行排序
 
-		rowSorter = new TableRowSorter<LineTableModel>(lineTableModel);//排序和搜索
+		rowSorter = new TableRowSorter<LineTableModel>(getLineTabelModel());//排序和搜索
 		LineTable.this.setRowSorter(rowSorter);
 
 		JTableHeader header = this.getTableHeader();
@@ -213,14 +209,14 @@ public class LineTable extends JTable
 	//搜索功能函数
 	public void search(String Input) {
 		History.getInstance().addRecord(Input);//记录搜索历史,单例模式
-		
+
 		final RowFilter filter = new RowFilter() {
 			@Override
 			public boolean include(Entry entry) {
 				//entry --- a non-null object that wraps the underlying object from the model
 				int row = (int) entry.getIdentifier();
 				LineEntry line = rowSorter.getModel().getLineEntries().getValueAtIndex(row);
-				
+
 				//目前只处理&&（and）逻辑的表达式
 				if (Input.contains("&&")) {
 					String[] searchConditions = Input.split("&&");
@@ -257,7 +253,7 @@ public class LineTable extends JTable
 					//int row = ((LineTable) e.getSource()).rowAtPoint(e.getPoint()); // 获得行位置
 					int col = ((LineTable) e.getSource()).columnAtPoint(e.getPoint()); // 获得列位置
 
-					LineEntry selecteEntry = LineTable.this.lineTableModel.getLineEntries().getValueAtIndex(rows[0]);
+					LineEntry selecteEntry = LineTable.this.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 					if (col==0) {//双击Index 搜索CVE字段
 						String cve = selecteEntry.getCVE();
 						String url= "https://www.google.com/search?q="+cve;
@@ -274,7 +270,7 @@ public class LineTable extends JTable
 						String path = selecteEntry.getPocFileFullPath();
 						Commons.editWithVSCode(path);
 					}else{
-						String value = LineTable.this.lineTableModel.getValueAt(rows[0],col).toString();
+						String value = LineTable.this.getLineTabelModel().getValueAt(rows[0],col).toString();
 						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 						StringSelection selection = new StringSelection(value);
 						clipboard.setContents(selection, null);

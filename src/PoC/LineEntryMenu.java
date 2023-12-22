@@ -17,7 +17,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import GUI.MainGUI;
 import burp.BurpExtender;
 import burp.Commons;
 import run.RunNucleiAction;
@@ -57,7 +56,7 @@ public class LineEntryMenu extends JPopupMenu {
 				if (rows.length >=50) {
 					return;
 				}
-				LineEntry selecteEntry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry selecteEntry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = selecteEntry.getPocFileFullPath();
 				Commons.editWithVSCode(path);
 			}
@@ -70,7 +69,7 @@ public class LineEntryMenu extends JPopupMenu {
 				try {
 					//JOptionPane.showMessageDialog(null,"Not found editor(code.exe idle.bat) in environment.");
 					if (rows != null && rows.length >=0){
-						LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+						LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 						String path = entry.getPocFileFullPath();
 						String dir = new File(path).getParent();
 						Commons.OpenFolder(dir);
@@ -90,7 +89,7 @@ public class LineEntryMenu extends JPopupMenu {
 				}
 				List<String> paths = new ArrayList<String>();
 				for (int row:rows) {
-					LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(row);
+					LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(row);
 					String path = entry.getPocFileFullPath();
 					paths.add(path);
 				}
@@ -101,21 +100,21 @@ public class LineEntryMenu extends JPopupMenu {
 
 			}
 		});
-		
-		
+
+
 		/**
 		 * nuclei -u 127.0.0.1
 		 */
 		JMenuItem genAllPoCCmd = new JMenuItem(new AbstractAction("Generate Command For All PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				
+
 				String Command = RunNucleiAction.genCommandRunAll(targets);
 				Commons.writeToClipboard(Command.trim());
-				
+
 			}
 		});
 
@@ -125,27 +124,27 @@ public class LineEntryMenu extends JPopupMenu {
 		JMenuItem runAllPoC = new JMenuItem(new AbstractAction("Run All PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genCommandRunAll(targets);
-				
+
 				RunNucleiAction.run(Command);
 			}
 		});
-		
 
-		
+
+
 		/**
 		 * nuclei -u 127.0.0.1 -t CVE-2020-3580.yaml
 		 */
 		JMenuItem genSinglePoCCmd = new JMenuItem(new AbstractAction("Generate Command Of This PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				
+
 				String Command;
 				if (entry.isWorkflow()) {
 					Command = RunNucleiAction.genWorkflowCommand(targets, path);
@@ -153,7 +152,7 @@ public class LineEntryMenu extends JPopupMenu {
 					Command = RunNucleiAction.genCommand(targets, path);
 				}
 				Commons.writeToClipboard(Command.trim());
-				
+
 			}
 		});
 
@@ -163,7 +162,7 @@ public class LineEntryMenu extends JPopupMenu {
 		JMenuItem runSinglePoC = new JMenuItem(new AbstractAction("Run This PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String path = entry.getPocFileFullPath();
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command;
@@ -172,11 +171,11 @@ public class LineEntryMenu extends JPopupMenu {
 				}else {
 					Command = RunNucleiAction.genCommand(targets, path);
 				}
-				
+
 				RunNucleiAction.run(Command);
 			}
 		});
-		
+
 		/**
 		 * 
 		 * nuclei -u 127.0.0.1 -tags cisco
@@ -184,20 +183,20 @@ public class LineEntryMenu extends JPopupMenu {
 		JMenuItem genCmdWithTags = new JMenuItem(new AbstractAction("Generate Command With Tags") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String tags = entry.getTags();
 				tags = getTags(tags);
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genTagsCommand(targets, tags);
 				Commons.writeToClipboard(Command.trim());
 			}
-			
+
 			public String getTags(String tags) {
 				String resulttags = JOptionPane.showInputDialog("tags to use", tags).trim();
 				return resulttags;
 			}
 		});
-		
+
 		/**
 		 * 
 		 * nuclei -u 127.0.0.1 -tags cisco
@@ -205,15 +204,15 @@ public class LineEntryMenu extends JPopupMenu {
 		JMenuItem runMultipluePoC = new JMenuItem(new AbstractAction("Run PoCs With Tags") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getModel().getLineEntries().getValueAtIndex(rows[0]);
+				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String tags = entry.getTags();
 				tags = getTags(tags);
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genTagsCommand(targets, tags);
-				
+
 				RunNucleiAction.run(Command);
 			}
-			
+
 			public String getTags(String tags) {
 				String resulttags = JOptionPane.showInputDialog("tags to use", tags).trim();
 				return resulttags;
