@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -185,6 +186,15 @@ public class LineEntryMenu extends JPopupMenu {
 			public void actionPerformed(ActionEvent actionEvent) {
 				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String tags = entry.getTags();
+				try {//用户搜索什么内容，很有可能就是要用什么PoC
+					String searchWord = PoCPanel.getTextFieldSearch().getText();
+					List<String> tagList = Arrays.asList(tags.split(","));
+					if (tagList.contains(searchWord)) {
+						tags = searchWord;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				tags = getTags(tags);
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genTagsCommand(targets, tags);
@@ -206,6 +216,15 @@ public class LineEntryMenu extends JPopupMenu {
 			public void actionPerformed(ActionEvent actionEvent) {
 				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String tags = entry.getTags();
+				try {//用户搜索什么内容，很有可能就是要用什么PoC
+					String searchWord = PoCPanel.getTextFieldSearch().getText();
+					List<String> tagList = Arrays.asList(tags.split(","));
+					if (tagList.contains(searchWord)) {
+						tags = searchWord;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				tags = getTags(tags);
 				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
 				String Command = RunNucleiAction.genTagsCommand(targets, tags);
