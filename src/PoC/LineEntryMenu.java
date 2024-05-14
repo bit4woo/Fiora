@@ -187,7 +187,7 @@ public class LineEntryMenu extends JPopupMenu {
 				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String tags = entry.getTags();
 				try {//用户搜索什么内容，很有可能就是要用什么PoC
-					String searchWord = PoCPanel.getTextFieldSearch().getText();
+					String searchWord = PoCPanel.getTextFieldSearch().getText().toLowerCase();
 					List<String> tagList = Arrays.asList(tags.split(","));
 					if (tagList.contains(searchWord)) {
 						tags = searchWord;
@@ -217,7 +217,7 @@ public class LineEntryMenu extends JPopupMenu {
 				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
 				String tags = entry.getTags();
 				try {//用户搜索什么内容，很有可能就是要用什么PoC
-					String searchWord = PoCPanel.getTextFieldSearch().getText();
+					String searchWord = PoCPanel.getTextFieldSearch().getText().toLowerCase();
 					List<String> tagList = Arrays.asList(tags.split(","));
 					if (tagList.contains(searchWord)) {
 						tags = searchWord;
