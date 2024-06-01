@@ -85,17 +85,6 @@ public class NucleiParser {
 		return yamlInfo;
 	}
 
-	@Deprecated
-	private static YamlInfo fromYaml(String inputFile) throws Exception {
-		FileReader bbb = new FileReader(inputFile);
-		Yaml yaml = new Yaml(new Constructor(YamlBeanFromMap.class));
-		YamlBeanFromMap data = yaml.load(bbb);
-		String id = data.getId();
-		Map<String, Object> info = data.getInfo();
-		YamlInfo yamlInfo = new YamlInfo(info);
-		return yamlInfo;
-
-	}
 
 	/**
 	 * 使用了jackson
