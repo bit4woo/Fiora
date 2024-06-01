@@ -27,6 +27,24 @@ public class RunNucleiAction {
 		String result = paraKey + " " + paraValue;
 		return result.trim();
 	}
+	
+	
+	public static String genPara(String paraKey, List<String> paraValues) {
+		if (paraKey == null ||paraKey.isBlank() ||paraValues == null || paraValues.isEmpty()) {
+			return "";
+		}
+		paraKey = paraKey.trim();
+		
+		String result = paraKey + " ";
+		for (String paraValue:paraValues) {
+			paraValue = paraValue.trim();
+			if (paraValue.contains(" ")) {
+				paraValue = "\"" + paraValue + "\"";
+			}
+			result +=","+paraValue;
+		}
+		return result.trim();
+	}
 
 	public static String prepareTargets(List<String> targets) {
 		if (targets.size() <= 0) {
@@ -73,35 +91,17 @@ public class RunNucleiAction {
 		}
 	}
 	
-
-	public static String genCommand(List<String> targets, String poc) {
+	public static String genSeletedPoCCommand(List<String> targets, List<String> poc, List<String> workflowPoc) {
 		try {
 			String para = "";
-			poc = genPara("-t",poc);
-			String target = prepareTargets(targets);
-			String proxy = prepareProxy();
-			para = poc+" "+target;
 			
-			if (targets.toString().toLowerCase().contains("http://")
-					|| targets.toString().toLowerCase().contains("https://")) {
-				para = para+" "+proxy;
-			}
-
-			String command = TerminalExec.genCmd(null, "nuclei", para);
-			return command;
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			return null;
-		}
-	}
-
-	public static String genWorkflowCommand(List<String> targets, String poc) {
-		try {
-			String para = "";
-			poc = genPara("-w",poc);
+			String pocPara = genPara("-t",poc);
+			String workflowPocPara = genPara("-w",workflowPoc);
+			
 			String target = prepareTargets(targets);
 			String proxy = prepareProxy();
-			para = poc+" "+target;
+			
+			para = pocPara+" "+workflowPocPara+" "+target;
 			
 			if (targets.toString().toLowerCase().contains("http://")
 					|| targets.toString().toLowerCase().contains("https://")) {

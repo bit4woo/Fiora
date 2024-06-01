@@ -245,7 +245,7 @@ public class LineTableModel extends AbstractTableModel implements Serializable {
 		}
 		synchronized (lineEntries) {
 			int oldsize = lineEntries.size();
-			String key = lineEntry.getPocfile();
+			String key = lineEntry.getPocFileName();
 			lineEntries.put(key,lineEntry);
 			int newsize = lineEntries.size();
 			int index = lineEntries.IndexOfKey(key);

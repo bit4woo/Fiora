@@ -1,7 +1,5 @@
 package PoCParser;
 
-import java.util.List;
-
 /**
  * 对应nuclei的yaml poc文件的java bean
  * 

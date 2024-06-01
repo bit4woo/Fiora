@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
@@ -26,7 +28,6 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import GUI.MainGUI;
 import PoC.search.SearchTextField;
 import PoCParser.NucleiParser;
-import PoCParser.PoctParser;
 import burp.BurpExtender;
 import burp.Commons;
 import burp.GlobalConfig;
@@ -49,7 +50,8 @@ public class PoCPanel extends JPanel {
 	private static JTextField textFieldSearch;
 	public static JRadioButton rdbtnUseRobotInput;
 	public static JLabel lblStatus;
-	public static JButton buttonFresh;
+	public static JButton buttonUpdate;
+	public static JButton buttonReload;
 
 	public static JTextField getTextFieldSearch() {
 		return textFieldSearch;
@@ -99,7 +101,8 @@ public class PoCPanel extends JPanel {
 	 * @param dir
 	 * @return
 	 */
-	public IndexedLinkedHashMap<String,LineEntry> scanPoCFiles(String dir) {
+	@Deprecated
+	public IndexedLinkedHashMap<String,LineEntry> scanPoctFiles(String dir) {
 		IndexedLinkedHashMap<String,LineEntry> lineEntries = new IndexedLinkedHashMap<String,LineEntry>();
 		if (null==dir || !new File(dir).exists()){
 			return lineEntries;
@@ -108,14 +111,14 @@ public class PoCPanel extends JPanel {
 		for (File file:files) {
 			//System.out.println(file.toString());
 			if (file.exists() && file.isFile() && !file.getName().startsWith("__")) {
-				LineEntry entry = PoctParser.Parser(file.toString());
-				lineEntries.put(file.toString(), entry);
+				//LineEntry entry = PoctParser.Parser(file.toString());
+				//lineEntries.put(file.toString(), entry);
 			}
 		}
 		return lineEntries;
 	}
+	
 	/**
-	 * 默认路径 /Users/bit4woo
 	 * @param dir
 	 * @return
 	 */
@@ -191,7 +194,7 @@ public class PoCPanel extends JPanel {
 				try {
 					if (null != destFile) {
 						FileUtils.copyFile(srcFile, destFile);
-						PoCPanel.buttonFresh.doClick();
+						PoCPanel.buttonReload.doClick();
 						Commons.editWithVSCode(destFile.getAbsolutePath());
 					}
 				}catch (FileNotFoundException e1) {
@@ -200,7 +203,7 @@ public class PoCPanel extends JPanel {
 					try {
 						if (null != destFile) {
 							FileUtils.writeByteArrayToFile(destFile,Base64.getDecoder().decode(content));
-							PoCPanel.buttonFresh.doClick();
+							PoCPanel.buttonReload.doClick();
 							Commons.editWithVSCode(destFile.getAbsolutePath());
 						}
 					} catch (IOException e2) {
@@ -251,19 +254,52 @@ public class PoCPanel extends JPanel {
 			}
 		});
 		buttonPanel.add(buttonSearch);
-
-		buttonFresh = new JButton("Fresh");
-		buttonPanel.add(buttonFresh);
-		buttonFresh.addActionListener(new ActionListener() {
+		
+		buttonUpdate = new JButton("Update PoCs");
+		buttonPanel.add(buttonUpdate);
+		buttonUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				updateTemplate();
-				LoadData(MainGUI.getGlobalConfig().getPoctRootPath());
-				lblStatus.setText(titleTableModel.getStatusSummary());
-				buttonSearch.doClick();
+				SwingWorker<Map, Map> worker = new SwingWorker<Map, Map>() {
+					@Override
+					protected Map doInBackground() throws Exception {
+						setEnabled(false);
+						updateTemplate();
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						setEnabled(true);
+					}
+				};
+				worker.execute();
 			}
 		});
 
-		JButton buttonProxy = new JButton("Proxy");
+		buttonReload = new JButton("Reload PoCs");
+		buttonPanel.add(buttonReload);
+		buttonReload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwingWorker<Map, Map> worker = new SwingWorker<Map, Map>() {
+					@Override
+					protected Map doInBackground() throws Exception {
+						setEnabled(false);
+						LoadData(MainGUI.getGlobalConfig().getPoctRootPath());
+						lblStatus.setText(titleTableModel.getStatusSummary());
+						buttonSearch.doClick();
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						setEnabled(true);
+					}
+				};
+				worker.execute();
+			}
+		});
+
+		JButton buttonProxy = new JButton("Set Proxy");
 		buttonPanel.add(buttonProxy);
 		buttonProxy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

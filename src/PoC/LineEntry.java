@@ -16,7 +16,8 @@ public class LineEntry {
 
 	//{"#", "filename", "VulnApp", "VulnVersion", "VulnURL","VulnParameter","VulnType","VulnDescription","Refrence","isPoCVerified", "22","33"};
 	private String pocFileFullPath = ""; //PoC文件完整路径，用于定位文件进行编辑。不显示。
-	private String pocfile = ""; //PoC文件名称，用于显示
+	private String pocFileName = ""; //PoC文件名称，用于显示
+	private String pocName = ""; //PoC内容中info部分的name字段
 	private String VulnApp = ""; //存在漏的目标应用程序名称
 	private String VulnVersion = "";//存在漏洞的版本
 	private String VulnURL = "";//存在漏洞的URL地址
@@ -57,12 +58,20 @@ public class LineEntry {
 		this.pocFileFullPath = pocFileFullPath;
 	}
 
-	public String getPocfile() {
-		return pocfile;
+	public String getPocFileName() {
+		return pocFileName;
 	}
 
-	public void setPocfile(String pocfile) {
-		this.pocfile = pocfile;
+	public void setPocFileName(String pocFileName) {
+		this.pocFileName = pocFileName;
+	}
+
+	public String getPocName() {
+		return pocName;
+	}
+
+	public void setPocName(String pocName) {
+		this.pocName = pocName;
 	}
 
 	public String getVulnApp() {

@@ -34,7 +34,7 @@ public class NucleiParser {
 		if (poc.exists() && poc.isFile()) {
 			try {
 				result.setPocFileFullPath(pocfile);
-				result.setPocfile(poc.getName());
+				result.setPocFileName(poc.getName());
 
 				String content = FileUtils.readFileToString(poc);
 
@@ -44,7 +44,7 @@ public class NucleiParser {
 				result.setCVE(bean.getId());
 
 				YamlInfo info = bean.getInfo();
-				result.setPocfile(info.getName());
+				result.setPocName(info.getName());
 				result.setAuthor(info.getAuthor());
 				result.setSeverity(info.getSeverity());
 				result.setVulnDescription(info.getDescription());
@@ -159,7 +159,5 @@ public class NucleiParser {
 	public static void main (String[] args) throws Exception {
 		yamlToBeanWithGson("C:\\Users\\P52\\nuclei-templates\\cves\\2014\\CVE-2014-2321.yaml");
 		yamlToBeanWithFastJson("C:\\Users\\P52\\nuclei-templates\\cves\\2014\\CVE-2014-2321.yaml");
-//		YamlBeanFromJson bean = yamlToBean("/Users/liwenjun/nuclei-templates/cves/2007/CVE-2007-4556.yaml");
-//		int a=1;
 	}
 }

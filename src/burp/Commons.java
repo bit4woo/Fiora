@@ -306,6 +306,6 @@ public class Commons {
 	}
 
 	public static void main(String args[]) {
-		editWithVSCode("/Users/liwenjun/Documents/github/POC-T/script/F5-BIG-IP-bufferOverflow.py");
+		
 	}
 }

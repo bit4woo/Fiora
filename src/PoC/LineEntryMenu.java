@@ -134,24 +134,25 @@ public class LineEntryMenu extends JPopupMenu {
 			}
 		});
 
-
-
 		/**
 		 * nuclei -u 127.0.0.1 -t CVE-2020-3580.yaml
 		 */
-		JMenuItem genSinglePoCCmd = new JMenuItem(new AbstractAction("Generate Command Of This PoC") {
+		JMenuItem genSinglePoCCmd = new JMenuItem(new AbstractAction("Generate Command Of Selected PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
-				String path = entry.getPocFileFullPath();
-				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-
-				String Command;
-				if (entry.isWorkflow()) {
-					Command = RunNucleiAction.genWorkflowCommand(targets, path);
-				}else {
-					Command = RunNucleiAction.genCommand(targets, path);
+				List<String> paths = new ArrayList<String>();
+				List<String> workflowPaths = new ArrayList<String>();
+				for (int row:rows) {
+					LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(row);
+					String path = entry.getPocFileFullPath();
+					if (entry.isWorkflow()) {
+						workflowPaths.add(path);
+					}else {
+						paths.add(path);
+					}
 				}
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String Command = RunNucleiAction.genSeletedPoCCommand(targets, paths,workflowPaths);
 				Commons.writeToClipboard(Command.trim());
 
 			}
@@ -160,19 +161,22 @@ public class LineEntryMenu extends JPopupMenu {
 		/**
 		 * nuclei -u 127.0.0.1 -t CVE-2020-3580.yaml
 		 */
-		JMenuItem runSinglePoC = new JMenuItem(new AbstractAction("Run This PoC") {
+		JMenuItem runSinglePoC = new JMenuItem(new AbstractAction("Run Selected PoC") {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(rows[0]);
-				String path = entry.getPocFileFullPath();
-				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
-				String Command;
-				if (entry.isWorkflow()) {
-					Command = RunNucleiAction.genWorkflowCommand(targets, path);
-				}else {
-					Command = RunNucleiAction.genCommand(targets, path);
+				List<String> paths = new ArrayList<String>();
+				List<String> workflowPaths = new ArrayList<String>();
+				for (int row:rows) {
+					LineEntry entry = lineTable.getLineTabelModel().getLineEntries().getValueAtIndex(row);
+					String path = entry.getPocFileFullPath();
+					if (entry.isWorkflow()) {
+						workflowPaths.add(path);
+					}else {
+						paths.add(path);
+					}
 				}
-
+				List<String> targets = Commons.getLinesFromTextArea(PoCPanel.getTitleTable().getTextAreaTarget());
+				String Command = RunNucleiAction.genSeletedPoCCommand(targets, paths,workflowPaths);
 				RunNucleiAction.run(Command);
 			}
 		});
