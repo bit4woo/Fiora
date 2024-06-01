@@ -35,7 +35,8 @@ public class LineEntry {
 	public static LinkedHashMap<String,Integer> fetchTableHeaderAndWidth(){
 		LinkedHashMap<String,Integer> preferredWidths = new LinkedHashMap<String,Integer>();
 		preferredWidths.put("#",5);
-		preferredWidths.put("pocfile",40);
+		preferredWidths.put("pocFileName",40);
+		preferredWidths.put("pocName",40);
 		preferredWidths.put("CVE","CVE-2019-1234567".length()*2);
 		preferredWidths.put("severity",10);
 		preferredWidths.put("tags",30);

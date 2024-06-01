@@ -1,6 +1,7 @@
 package PoC;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Toolkit;
@@ -130,8 +131,8 @@ public class LineTable extends JTable
 		//scrollPaneRequests.setViewportView(titleTable);//titleTable should lay here.
 		splitPane.setLeftComponent(scrollPaneRequests);
 
-		JSplitPane RequestDetailPanel = new JSplitPane();//request and response
-		RequestDetailPanel.setResizeWeight(0.4);
+		JSplitPane RequestDetailPanel = new JSplitPane();
+		RequestDetailPanel.setResizeWeight(0.3);
 		splitPane.setRightComponent(RequestDetailPanel);
 
 		JTabbedPane RequestPanel = new JTabbedPane();
@@ -141,13 +142,13 @@ public class LineTable extends JTable
 		RequestPanel.addTab("targets", null, scrollPane, null);
 
 		textAreaTarget = new JTextArea();
+		textAreaTarget.setColumns(60);//为了避免左侧空间太小
 		scrollPane.setViewportView(textAreaTarget);
 		textAreaTarget.addMouseListener(new TextAreaMouseListener(textAreaTarget));
 		GlobalConfig config = MainGUI.getGlobalConfig();
 		if (config != null) {
 			textAreaTarget.getDocument().addDocumentListener(new textAreaDocumentListener(textAreaTarget,config));
 		}
-
 
 		JTabbedPane ResponsePanel = new JTabbedPane();
 		RequestDetailPanel.setRightComponent(ResponsePanel);

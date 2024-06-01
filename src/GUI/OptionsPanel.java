@@ -77,8 +77,9 @@ public class OptionsPanel extends JPanel {
 		add(lblNewLabel, new bagLayout(++rowIndex, ++cloumnIndex));
 		add(nucleiTemplatesPath, new bagLayout(rowIndex, ++cloumnIndex));
 		
-		add(buttonCreateFolder, new bagLayout(++rowIndex, ++cloumnIndex));
-		add(btOpenFolder, new bagLayout(++rowIndex, ++cloumnIndex));
+		cloumnIndex = 0;
+		add(buttonCreateFolder, new bagLayout(++rowIndex, cloumnIndex));
+		add(btOpenFolder, new bagLayout(++rowIndex, cloumnIndex));
 	}
 	
 	class bagLayout extends GridBagConstraints {
