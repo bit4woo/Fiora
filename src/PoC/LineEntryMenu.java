@@ -231,6 +231,12 @@ public class LineEntryMenu extends JPopupMenu {
 					List<String> tagList = Arrays.asList(tags.split(","));
 					if (tagList.contains(searchWord)) {
 						tags = searchWord;
+					}else {
+						for (String tag:tagList) {
+							if (tag.contains(searchWord)) {
+								tags = tag;
+							}
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
